@@ -67,4 +67,22 @@ export default class Game {
       entity.y + entity.height > area.y
     );
   }
+
+  onKeyDown(key: KeyboardEvent) {
+    if (key.key === 'ArrowLeft') {
+      this.hero.startLeftMove();
+    }
+    if (key.key === 'ArrowRight') {
+      this.hero.startRightMove();
+    }
+  }
+
+  onKeyUp(key: KeyboardEvent) {
+    if (key.key === 'ArrowLeft') {
+      this.hero.stopLeftMove();
+    }
+    if (key.key === 'ArrowRight') {
+      this.hero.stopRightMove();
+    }
+  }
 }

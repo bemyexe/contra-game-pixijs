@@ -3,6 +3,7 @@ import Game from './game';
 
 const app = new Application();
 const game = new Game(app);
+
 (async () => {
   await setup();
   app.ticker.add(game.update, game);
@@ -16,3 +17,11 @@ async function setup() {
   });
   document.body.appendChild(app.canvas);
 }
+
+document.addEventListener('keydown', function (key) {
+  game.onKeyDown(key);
+});
+
+document.addEventListener('keyup', function (key) {
+  game.onKeyUp(key);
+});
