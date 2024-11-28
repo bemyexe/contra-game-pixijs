@@ -1,11 +1,15 @@
 import { Application } from 'pixi.js';
 import Hero from './Entities/Hero';
-import Platform from './Entities/Platform';
+import Platform from './Entities/Platforms/Platform';
+import PlatformFactory from './Entities/Platforms/PlatformFactory';
+import KeyboardProcessor from './KeyboardProcessor';
 
 export default class Game {
   private app;
   private hero;
   private platforms: Platform[] = [];
+
+  public keyboardProcessor;
   constructor(app: Application) {
     this.app = app;
 
@@ -14,24 +18,32 @@ export default class Game {
     this.hero.y = 250;
     this.app.stage.addChild(this.hero);
 
-    const platform1 = new Platform();
-    platform1.x = 50;
-    platform1.y = 400;
-    this.app.stage.addChild(platform1);
+    const platformFactory = new PlatformFactory(app);
 
-    const platform2 = new Platform();
-    platform2.x = 200;
-    platform2.y = 450;
-    this.app.stage.addChild(platform2);
-
-    const platform3 = new Platform();
-    platform3.x = 350;
-    platform3.y = 400;
-    this.app.stage.addChild(platform3);
+    const platform1 = platformFactory.createPlatform(50, 400);
+    const platform2 = platformFactory.createPlatform(200, 450);
+    const platform3 = platformFactory.createPlatform(350, 400);
 
     this.platforms.push(platform1);
     this.platforms.push(platform2);
     this.platforms.push(platform3);
+
+    this.keyboardProcessor = new KeyboardProcessor(this);
+    this.keyboardProcessor.getButton('ArrowLeft').executeDown = () => {
+      this.hero.startLeftMove();
+    };
+    this.keyboardProcessor.getButton('ArrowRight').executeDown = () => {
+      this.hero.startRightMove();
+    };
+    this.keyboardProcessor.getButton('ArrowUp').executeDown = () => {
+      this.hero.jump();
+    };
+    this.keyboardProcessor.getButton('ArrowLeft').executeUp = () => {
+      this.hero.stopLeftMove();
+    };
+    this.keyboardProcessor.getButton('ArrowRight').executeUp = () => {
+      this.hero.stopRightMove();
+    };
   }
 
   update() {
@@ -66,23 +78,5 @@ export default class Game {
       entity.y < area.y + area.height &&
       entity.y + entity.height > area.y
     );
-  }
-
-  onKeyDown(key: KeyboardEvent) {
-    if (key.key === 'ArrowLeft') {
-      this.hero.startLeftMove();
-    }
-    if (key.key === 'ArrowRight') {
-      this.hero.startRightMove();
-    }
-  }
-
-  onKeyUp(key: KeyboardEvent) {
-    if (key.key === 'ArrowLeft') {
-      this.hero.stopLeftMove();
-    }
-    if (key.key === 'ArrowRight') {
-      this.hero.stopRightMove();
-    }
   }
 }
