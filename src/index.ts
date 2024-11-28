@@ -19,9 +19,9 @@ async function setup() {
 }
 
 document.addEventListener('keydown', function (key) {
-  game.onKeyDown(key);
+  game.keyboardProcessor.onKeyDown(key);
 });
 
 document.addEventListener('keyup', function (key) {
-  game.onKeyUp(key);
+  game.keyboardProcessor.onKeyUp(key);
 });
