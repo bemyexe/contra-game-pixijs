@@ -1,5 +1,5 @@
 import {Application} from "pixi.js";
-import Hero from "./Entities/Hero";
+import Hero from "./Entities/Hero/Hero";
 import Platform from "./Entities/Platforms/Platform";
 import PlatformFactory from "./Entities/Platforms/PlatformFactory";
 import KeyboardProcessor from "./KeyboardProcessor";
@@ -14,10 +14,9 @@ export default class Game {
   constructor(app: Application) {
     this.app = app;
 
-    this.hero = new Hero();
+    this.hero = new Hero(this.app.stage);
     this.hero.x = 100;
     this.hero.y = 250;
-    this.app.stage.addChild(this.hero);
 
     const platformFactory = new PlatformFactory(app);
 
@@ -67,7 +66,7 @@ export default class Game {
     prevPoint: Pick<Hero | Platform, "x" | "y">
   ) {
     const collisionResult = this.getOrientCollisionResult(
-      character.getRect(),
+      character.collisionBox,
       platform,
       prevPoint
     );

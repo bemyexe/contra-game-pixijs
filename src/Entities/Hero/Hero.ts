@@ -1,14 +1,17 @@
-import {Container, Graphics} from "pixi.js";
+import {Container} from "pixi.js";
+import HeroView from "./HeroView";
 
 const STATES = {stay: "stay", jump: "jump", flyDown: "flydown"};
 
-export default class Hero extends Container {
+export default class Hero {
   private GRAVITY_FORCE = 0.2;
   private SPEED = 3;
   private JUMP_FORCE = 9;
 
   private velocityX = 0;
   private velocityY = 0;
+
+  private view;
 
   private movement = {
     x: 0,
@@ -20,12 +23,29 @@ export default class Hero extends Container {
   };
 
   private state = STATES.stay;
-  constructor() {
-    super();
-    const view = new Graphics();
-    view.rect(0, 0, 20, 90);
-    view.stroke(0xffff00);
-    this.addChild(view);
+  constructor(stage: Container) {
+    this.view = new HeroView();
+    stage.addChild(this.view);
+  }
+
+  get collisionBox() {
+    return this.view.collisionBox;
+  }
+
+  get x() {
+    return this.view.x;
+  }
+
+  set x(x: number) {
+    this.view.x = x;
+  }
+
+  get y() {
+    return this.view.y;
+  }
+
+  set y(y: number) {
+    this.view.y = y;
   }
 
   update() {
@@ -44,7 +64,7 @@ export default class Hero extends Container {
     this.velocityY = 0;
     this.state = STATES.stay;
 
-    this.y = platformY - this.height;
+    this.y = platformY - this.view.collisionBox.height;
   }
 
   jump() {
@@ -87,14 +107,5 @@ export default class Hero extends Container {
   stopRightMove() {
     this.directionContext.right = 0;
     this.movement.x = this.directionContext.left;
-  }
-
-  private rect = {x: 0, y: 0, width: 0, height: 0};
-  getRect() {
-    this.rect.x = this.x;
-    this.rect.y = this.y;
-    this.rect.width = this.width;
-    this.rect.height = this.height;
-    return this.rect;
   }
 }
