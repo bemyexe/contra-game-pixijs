@@ -1,8 +1,8 @@
-import { Application } from 'pixi.js';
-import Hero from './Entities/Hero';
-import Platform from './Entities/Platforms/Platform';
-import PlatformFactory from './Entities/Platforms/PlatformFactory';
-import KeyboardProcessor from './KeyboardProcessor';
+import {Application} from "pixi.js";
+import Hero from "./Entities/Hero";
+import Platform from "./Entities/Platforms/Platform";
+import PlatformFactory from "./Entities/Platforms/PlatformFactory";
+import KeyboardProcessor from "./KeyboardProcessor";
 
 export default class Game {
   private app;
@@ -34,7 +34,7 @@ export default class Game {
   }
 
   update() {
-    const prevPoint: Pick<Hero | Platform, 'x' | 'y'> = {
+    const prevPoint: Pick<Hero | Platform, "x" | "y"> = {
       x: this.hero.x,
       y: this.hero.y,
     };
@@ -60,7 +60,7 @@ export default class Game {
   getPlatformCollisionResult(
     character: Hero,
     platform: Platform,
-    prevPoint: Pick<Hero | Platform, 'x' | 'y'>
+    prevPoint: Pick<Hero | Platform, "x" | "y">
   ) {
     const collisionResult = this.getOrientCollisionResult(
       character.getRect(),
@@ -75,9 +75,9 @@ export default class Game {
   }
 
   getOrientCollisionResult(
-    aaRect: { x: number; y: number; width: number; height: number },
-    bbRect: { x: number; y: number; width: number; height: number },
-    aaPrevPoint: { x: number; y: number }
+    aaRect: {x: number; y: number; width: number; height: number},
+    bbRect: {x: number; y: number; width: number; height: number},
+    aaPrevPoint: {x: number; y: number}
   ) {
     const collisionResult = {
       horizontal: false,
@@ -99,8 +99,8 @@ export default class Game {
   }
 
   isCheckAABB(
-    entity: { x: number; y: number; width: number; height: number },
-    area: { x: number; y: number; width: number; height: number }
+    entity: {x: number; y: number; width: number; height: number},
+    area: {x: number; y: number; width: number; height: number}
   ) {
     return (
       entity.x < area.x + area.width &&
@@ -111,19 +111,23 @@ export default class Game {
   }
 
   setKeys() {
-    this.keyboardProcessor.getButton('ArrowLeft').executeDown = () => {
+    this.keyboardProcessor.getButton("Space").executeDown = () => {
+      if (this.keyboardProcessor.isButtonPressed("ArrowDown")) {
+        this.hero.throwDown();
+      } else {
+        this.hero.jump();
+      }
+    };
+    this.keyboardProcessor.getButton("ArrowLeft").executeDown = () => {
       this.hero.startLeftMove();
     };
-    this.keyboardProcessor.getButton('ArrowRight').executeDown = () => {
+    this.keyboardProcessor.getButton("ArrowRight").executeDown = () => {
       this.hero.startRightMove();
     };
-    this.keyboardProcessor.getButton('ArrowUp').executeDown = () => {
-      this.hero.jump();
-    };
-    this.keyboardProcessor.getButton('ArrowLeft').executeUp = () => {
+    this.keyboardProcessor.getButton("ArrowLeft").executeUp = () => {
       this.hero.stopLeftMove();
     };
-    this.keyboardProcessor.getButton('ArrowRight').executeUp = () => {
+    this.keyboardProcessor.getButton("ArrowRight").executeUp = () => {
       this.hero.stopRightMove();
     };
   }

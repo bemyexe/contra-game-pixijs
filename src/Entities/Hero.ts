@@ -1,6 +1,6 @@
-import { Container, Graphics } from 'pixi.js';
+import {Container, Graphics} from "pixi.js";
 
-const STATES = { stay: 'stay', jump: 'jump', flyDown: 'flydown' };
+const STATES = {stay: "stay", jump: "jump", flyDown: "flydown"};
 
 export default class Hero extends Container {
   private GRAVITY_FORCE = 0.1;
@@ -54,6 +54,10 @@ export default class Hero extends Container {
     return this.state === STATES.jump;
   }
 
+  throwDown() {
+    this.state = STATES.jump;
+  }
+
   startLeftMove() {
     this.directionContext.left = -1;
 
@@ -82,7 +86,7 @@ export default class Hero extends Container {
     this.movement.x = this.directionContext.left;
   }
 
-  private rect = { x: 0, y: 0, width: 0, height: 0 };
+  private rect = {x: 0, y: 0, width: 0, height: 0};
   getRect() {
     this.rect.x = this.x;
     this.rect.y = this.y;

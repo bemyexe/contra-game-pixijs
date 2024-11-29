@@ -1,4 +1,4 @@
-import Game from './game';
+import Game from "./game";
 
 export default class KeyboardProcessor {
   private keyMap: {
@@ -8,6 +8,9 @@ export default class KeyboardProcessor {
       executeUp?: () => void;
     };
   } = {
+    Space: {
+      isDown: false,
+    },
     ArrowLeft: {
       isDown: false,
     },
