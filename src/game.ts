@@ -122,23 +122,67 @@ export default class Game {
 
   setKeys() {
     this.keyboardProcessor.getButton("Space").executeDown = () => {
-      if (this.keyboardProcessor.isButtonPressed("ArrowDown")) {
+      if (
+        this.keyboardProcessor.isButtonPressed("ArrowDown") &&
+        !(
+          this.keyboardProcessor.isButtonPressed("ArrowLeft") ||
+          this.keyboardProcessor.isButtonPressed("ArrowRight")
+        )
+      ) {
         this.hero.throwDown();
       } else {
         this.hero.jump();
       }
     };
-    this.keyboardProcessor.getButton("ArrowLeft").executeDown = () => {
+
+    const arrowLeft = this.keyboardProcessor.getButton("ArrowLeft");
+    arrowLeft.executeDown = () => {
       this.hero.startLeftMove();
+      this.hero.setView(this.getArrowButtonContext());
     };
-    this.keyboardProcessor.getButton("ArrowRight").executeDown = () => {
-      this.hero.startRightMove();
-    };
-    this.keyboardProcessor.getButton("ArrowLeft").executeUp = () => {
+    arrowLeft.executeUp = () => {
       this.hero.stopLeftMove();
+      this.hero.setView(this.getArrowButtonContext());
     };
-    this.keyboardProcessor.getButton("ArrowRight").executeUp = () => {
+
+    const arrowRight = this.keyboardProcessor.getButton("ArrowRight");
+    arrowRight.executeDown = () => {
+      this.hero.startRightMove();
+      this.hero.setView(this.getArrowButtonContext());
+    };
+
+    arrowRight.executeUp = () => {
       this.hero.stopRightMove();
+      this.hero.setView(this.getArrowButtonContext());
     };
+
+    const arrowUp = this.keyboardProcessor.getButton("ArrowUp");
+    arrowUp.executeDown = () => {
+      this.hero.setView(this.getArrowButtonContext());
+    };
+    arrowUp.executeUp = () => {
+      this.hero.setView(this.getArrowButtonContext());
+    };
+
+    const arrowDown = this.keyboardProcessor.getButton("ArrowDown");
+    arrowDown.executeDown = () => {
+      this.hero.setView(this.getArrowButtonContext());
+    };
+    arrowDown.executeUp = () => {
+      this.hero.setView(this.getArrowButtonContext());
+    };
+  }
+
+  public getArrowButtonContext() {
+    const buttonContext: {[key: string]: boolean} = {};
+    buttonContext.arrowLeft =
+      this.keyboardProcessor.isButtonPressed("ArrowLeft");
+    buttonContext.arrowRight =
+      this.keyboardProcessor.isButtonPressed("ArrowRight");
+    buttonContext.arrowUp = this.keyboardProcessor.isButtonPressed("ArrowUp");
+    buttonContext.arrowDown =
+      this.keyboardProcessor.isButtonPressed("ArrowDown");
+    buttonContext.shoot = this.keyboardProcessor.isButtonPressed("KeyA");
+    return buttonContext;
   }
 }
