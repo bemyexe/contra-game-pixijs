@@ -3,11 +3,12 @@ import {Container, Graphics} from "pixi.js";
 const STATES = {stay: "stay", jump: "jump", flyDown: "flydown"};
 
 export default class Hero extends Container {
-  private GRAVITY_FORCE = 0.1;
-  private SPEED = 2;
+  private GRAVITY_FORCE = 0.2;
+  private SPEED = 3;
+  private JUMP_FORCE = 9;
+
   private velocityX = 0;
   private velocityY = 0;
-  private JUMP_FORCE = 6;
 
   private movement = {
     x: 0,
@@ -22,8 +23,8 @@ export default class Hero extends Container {
   constructor() {
     super();
     const view = new Graphics();
-    view.rect(0, 0, 20, 60);
-    view.stroke(0xff0000);
+    view.rect(0, 0, 20, 90);
+    view.stroke(0xffff00);
     this.addChild(view);
   }
 
@@ -39,9 +40,11 @@ export default class Hero extends Container {
     this.y += this.velocityY;
   }
 
-  stay() {
+  stay(platformY: number) {
     this.velocityY = 0;
     this.state = STATES.stay;
+
+    this.y = platformY - this.height;
   }
 
   jump() {

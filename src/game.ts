@@ -3,11 +3,12 @@ import Hero from "./Entities/Hero";
 import Platform from "./Entities/Platforms/Platform";
 import PlatformFactory from "./Entities/Platforms/PlatformFactory";
 import KeyboardProcessor from "./KeyboardProcessor";
+import Box from "./Entities/Platforms/Box";
 
 export default class Game {
   private app;
   private hero;
-  private platforms: Platform[] = [];
+  private platforms: Platform[] & Box[] = [];
 
   public keyboardProcessor;
   constructor(app: Application) {
@@ -26,9 +27,12 @@ export default class Game {
     this.platforms.push(platformFactory.createPlatform(700, 400));
     this.platforms.push(platformFactory.createPlatform(900, 400));
     this.platforms.push(platformFactory.createPlatform(300, 550));
-    this.platforms.push(platformFactory.createPlatform(0, 738));
-    this.platforms.push(platformFactory.createPlatform(200, 738));
-    this.platforms.push(platformFactory.createPlatform(400, 708));
+    this.platforms.push(platformFactory.createBox(0, 738));
+    this.platforms.push(platformFactory.createBox(200, 738));
+
+    const box = platformFactory.createBox(400, 708);
+    box.isStep = true;
+    this.platforms.push(box);
     this.keyboardProcessor = new KeyboardProcessor(this);
     this.setKeys();
   }
@@ -42,7 +46,7 @@ export default class Game {
     this.hero.update();
 
     for (let i = 0; i < this.platforms.length; i++) {
-      if (this.hero.isJumpState()) {
+      if (this.hero.isJumpState() && this.platforms[i].type !== "box") {
         continue;
       }
 
@@ -52,14 +56,14 @@ export default class Game {
         prevPoint
       );
       if (collisionResult.vertical === true) {
-        this.hero.stay();
+        this.hero.stay(this.platforms[i].y);
       }
     }
   }
 
   getPlatformCollisionResult(
     character: Hero,
-    platform: Platform,
+    platform: Platform & Box,
     prevPoint: Pick<Hero | Platform, "x" | "y">
   ) {
     const collisionResult = this.getOrientCollisionResult(
@@ -70,6 +74,13 @@ export default class Game {
 
     if (collisionResult.vertical === true) {
       character.y = prevPoint.y;
+    }
+
+    if (collisionResult.horizontal === true && platform.type == "box") {
+      if (platform.isStep) {
+        character.stay(platform.y);
+      }
+      character.x = prevPoint.x;
     }
     return collisionResult;
   }
