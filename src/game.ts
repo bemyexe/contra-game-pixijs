@@ -1,31 +1,38 @@
-import {Application} from "pixi.js";
+import {Application, Container} from "pixi.js";
 import Hero from "./Entities/Hero/Hero";
 import Platform from "./Entities/Platforms/Platform";
 import PlatformFactory from "./Entities/Platforms/PlatformFactory";
 import KeyboardProcessor from "./KeyboardProcessor";
 import Box from "./Entities/Platforms/Box";
+import Camera, {CameraSettings} from "./Camera";
 
 export default class Game {
   private app;
   private hero;
   private platforms: Platform[] & Box[] = [];
+  private camera;
 
   public keyboardProcessor;
   constructor(app: Application) {
     this.app = app;
 
-    this.hero = new Hero(this.app.stage);
+    const worldContainer = new Container();
+    this.app.stage.addChild(worldContainer);
+
+    this.hero = new Hero(worldContainer);
     this.hero.x = 100;
     this.hero.y = 250;
 
-    const platformFactory = new PlatformFactory(app);
+    const platformFactory = new PlatformFactory(worldContainer);
 
     this.platforms.push(platformFactory.createPlatform(100, 400));
     this.platforms.push(platformFactory.createPlatform(300, 400));
     this.platforms.push(platformFactory.createPlatform(500, 400));
     this.platforms.push(platformFactory.createPlatform(700, 400));
-    this.platforms.push(platformFactory.createPlatform(900, 400));
+    this.platforms.push(platformFactory.createPlatform(1100, 400));
+
     this.platforms.push(platformFactory.createPlatform(300, 550));
+
     this.platforms.push(platformFactory.createBox(0, 738));
     this.platforms.push(platformFactory.createBox(200, 738));
 
@@ -34,6 +41,15 @@ export default class Game {
     this.platforms.push(box);
     this.keyboardProcessor = new KeyboardProcessor(this);
     this.setKeys();
+    const cameraSettings: CameraSettings = {
+      target: this.hero,
+      world: worldContainer,
+      screenSize: this.app.screen,
+      maxWorldWidth: worldContainer.width,
+      isBackScrollX: false,
+    };
+    console.log(cameraSettings);
+    this.camera = new Camera(cameraSettings);
   }
 
   update() {
@@ -58,6 +74,8 @@ export default class Game {
         this.hero.stay(this.platforms[i].y);
       }
     }
+
+    this.camera.update();
   }
 
   getPlatformCollisionResult(
