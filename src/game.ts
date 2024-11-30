@@ -59,26 +59,14 @@ export default class Game {
   }
 
   update() {
-    const prevPoint: Pick<Hero | Platform, "x" | "y"> = {
-      x: this.hero.x,
-      y: this.hero.y,
-    };
-
     this.hero.update();
 
-    for (let i = 0; i < this.platforms.length; i++) {
-      if (this.hero.isJumpState() && this.platforms[i].type !== "box") {
+    for (let platform of this.platforms) {
+      if (this.hero.isJumpState() && platform.type !== "box") {
         continue;
       }
 
-      const collisionResult = this.getPlatformCollisionResult(
-        this.hero,
-        this.platforms[i],
-        prevPoint
-      );
-      if (collisionResult.vertical === true) {
-        this.hero.stay(this.platforms[i].y);
-      }
+      this.checkPlatformCollision(this.hero, platform);
     }
 
     this.camera.update();
@@ -103,11 +91,8 @@ export default class Game {
     }
   }
 
-  getPlatformCollisionResult(
-    character: Hero,
-    platform: Platform & Box,
-    prevPoint: Pick<Hero | Platform, "x" | "y">
-  ) {
+  checkPlatformCollision(character: Hero, platform: Platform & Box) {
+    const prevPoint = character.getPrevPoint;
     const collisionResult = this.getOrientCollisionResult(
       character.collisionBox,
       platform,
@@ -116,15 +101,16 @@ export default class Game {
 
     if (collisionResult.vertical === true) {
       character.y = prevPoint.y;
+      this.hero.stay(platform.y);
     }
 
     if (collisionResult.horizontal === true && platform.type == "box") {
       if (platform.isStep) {
         character.stay(platform.y);
+      } else {
+        character.x = prevPoint.x;
       }
-      character.x = prevPoint.x;
     }
-    return collisionResult;
   }
 
   getOrientCollisionResult(

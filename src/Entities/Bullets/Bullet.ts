@@ -6,7 +6,7 @@ export default class Bullet extends Container {
   constructor(bulletAngle: number) {
     super();
 
-    this.bulletAngle = bulletAngle;
+    this.bulletAngle = bulletAngle * (Math.PI / 180);
 
     const view = new Graphics();
     view.rect(0, 0, 5, 5);

@@ -6,11 +6,11 @@ const app = new Application();
 (async () => {
   await setup();
   const game = new Game(app);
-  document.addEventListener("keydown", function (key) {
+  document.addEventListener("keydown", (key) => {
     game.keyboardProcessor.onKeyDown(key);
   });
 
-  document.addEventListener("keyup", function (key) {
+  document.addEventListener("keyup", (key) => {
     game.keyboardProcessor.onKeyUp(key);
   });
 
