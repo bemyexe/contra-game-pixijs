@@ -8,6 +8,9 @@ export default class KeyboardProcessor {
       executeUp?: () => void;
     };
   } = {
+    KeyA: {
+      isDown: false,
+    },
     Space: {
       isDown: false,
     },

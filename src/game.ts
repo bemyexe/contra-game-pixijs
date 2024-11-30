@@ -5,25 +5,30 @@ import PlatformFactory from "./Entities/Platforms/PlatformFactory";
 import KeyboardProcessor from "./KeyboardProcessor";
 import Box from "./Entities/Platforms/Box";
 import Camera, {CameraSettings} from "./Camera";
+import BulletFactory from "./Entities/Bullets/BulletFactory";
+import Bullet from "./Entities/Bullets/Bullet";
 
 export default class Game {
   private app;
   private hero;
   private platforms: Platform[] & Box[] = [];
   private camera;
+  private bulletFactory;
+  private bullets: Bullet[] = [];
+  private worldContainer: Container;
 
   public keyboardProcessor;
   constructor(app: Application) {
     this.app = app;
 
-    const worldContainer = new Container();
-    this.app.stage.addChild(worldContainer);
+    this.worldContainer = new Container();
+    this.app.stage.addChild(this.worldContainer);
 
-    this.hero = new Hero(worldContainer);
+    this.hero = new Hero(this.worldContainer);
     this.hero.x = 100;
     this.hero.y = 250;
 
-    const platformFactory = new PlatformFactory(worldContainer);
+    const platformFactory = new PlatformFactory(this.worldContainer);
 
     this.platforms.push(platformFactory.createPlatform(100, 400));
     this.platforms.push(platformFactory.createPlatform(300, 400));
@@ -43,13 +48,14 @@ export default class Game {
     this.setKeys();
     const cameraSettings: CameraSettings = {
       target: this.hero,
-      world: worldContainer,
+      world: this.worldContainer,
       screenSize: this.app.screen,
-      maxWorldWidth: worldContainer.width,
+      maxWorldWidth: this.worldContainer.width,
       isBackScrollX: false,
     };
-    console.log(cameraSettings);
     this.camera = new Camera(cameraSettings);
+
+    this.bulletFactory = new BulletFactory();
   }
 
   update() {
@@ -76,6 +82,10 @@ export default class Game {
     }
 
     this.camera.update();
+
+    for (let i = 0; i < this.bullets.length; i++) {
+      this.bullets[i].update();
+    }
   }
 
   getPlatformCollisionResult(
@@ -139,6 +149,12 @@ export default class Game {
   }
 
   setKeys() {
+    this.keyboardProcessor.getButton("KeyA").executeDown = () => {
+      const bullet = this.bulletFactory.createBullet(this.hero.x, this.hero.y);
+      this.worldContainer.addChild(bullet);
+      this.bullets.push(bullet);
+    };
+
     this.keyboardProcessor.getButton("Space").executeDown = () => {
       if (
         this.keyboardProcessor.isButtonPressed("ArrowDown") &&
