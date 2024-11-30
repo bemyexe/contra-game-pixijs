@@ -27,6 +27,9 @@ export default class Hero {
   private isLay = false;
   private isStayUp = false;
   public isFall = false;
+
+  private bulletContextField: {[key: string]: number} = {x: 0, y: 0, angle: 0};
+  private bulletAngle: number = 0;
   constructor(stage: Container) {
     this.view = new HeroView();
     stage.addChild(this.view);
@@ -53,6 +56,15 @@ export default class Hero {
 
   set y(y: number) {
     this.view.y = y;
+  }
+
+  get bulletContext() {
+    this.bulletContextField.x = this.x + this.view.bulletPointsShift.x;
+    this.bulletContextField.y = this.y + this.view.bulletPointsShift.y;
+    this.bulletContextField.angle = this.view.isFliped
+      ? this.bulletAngle * -1 + 180
+      : this.bulletAngle;
+    return this.bulletContextField;
   }
 
   public update() {
@@ -134,6 +146,8 @@ export default class Hero {
   public setView(buttonContext: {[key: string]: boolean}) {
     this.view.flip(this.movement.x);
 
+    this.setBulletAngle(buttonContext);
+
     if (this.state === STATES.jump || this.state === STATES.flyDown) return;
 
     if (buttonContext.arrowLeft || buttonContext.arrowRight) {
@@ -151,6 +165,26 @@ export default class Hero {
         this.view.showLay();
       } else {
         this.view.showStay();
+      }
+    }
+  }
+
+  private setBulletAngle(buttonContext: {[key: string]: boolean}) {
+    if (buttonContext.arrowLeft || buttonContext.arrowRight) {
+      if (buttonContext.arrowUp) {
+        this.bulletAngle = -45;
+      } else if (buttonContext.arrowDown) {
+        this.bulletAngle = 45;
+      } else {
+        this.bulletAngle = 0;
+      }
+    } else {
+      if (buttonContext.arrowUp) {
+        this.bulletAngle = -90;
+      } else if (buttonContext.arrowDown && this.state === STATES.jump) {
+        this.bulletAngle = 90;
+      } else {
+        this.bulletAngle = 0;
       }
     }
   }

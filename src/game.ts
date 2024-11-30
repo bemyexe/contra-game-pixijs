@@ -85,6 +85,21 @@ export default class Game {
 
     for (let i = 0; i < this.bullets.length; i++) {
       this.bullets[i].update();
+      this.checkBulletPosition(this.bullets[i], i);
+    }
+  }
+
+  private checkBulletPosition(bullet: Bullet, index: number) {
+    if (
+      bullet.x > this.app.screen.width - this.worldContainer.x ||
+      bullet.x < -this.worldContainer.x ||
+      bullet.y > this.app.screen.height ||
+      bullet.y < 0
+    ) {
+      if (bullet.parent !== null) {
+        bullet.removeFromParent();
+      }
+      this.bullets.splice(index, 1);
     }
   }
 
@@ -150,7 +165,7 @@ export default class Game {
 
   setKeys() {
     this.keyboardProcessor.getButton("KeyA").executeDown = () => {
-      const bullet = this.bulletFactory.createBullet(this.hero.x, this.hero.y);
+      const bullet = this.bulletFactory.createBullet(this.hero.bulletContext);
       this.worldContainer.addChild(bullet);
       this.bullets.push(bullet);
     };
