@@ -1,17 +1,14 @@
-import {Container} from "pixi.js";
-import RunnerView from "./RunnerView";
+import Entity from "../../Entity";
 
 const STATES = {stay: "stay", jump: "jump", flyDown: "flydown"};
 
-export default class Runner {
+export default class Runner extends Entity {
   private GRAVITY_FORCE = 0.2;
   private SPEED = 3;
   private JUMP_FORCE = 9;
 
   private velocityX = 0;
   private velocityY = 0;
-
-  private view;
 
   private prevPoint = {
     x: 0,
@@ -27,33 +24,32 @@ export default class Runner {
 
   public isFall = false;
 
-  constructor(stage: Container) {
-    this.view = new RunnerView();
-    stage.addChild(this.view);
+  constructor(view: any) {
+    super(view);
 
     this.state = STATES.jump;
-    this.view.showJump();
+    this._view.showJump();
     this.movement.x = -1;
   }
 
   get collisionBox() {
-    return this.view.collisionBox;
+    return this._view.collisionBox;
   }
 
   get x() {
-    return this.view.x;
+    return this._view.x;
   }
 
   set x(x: number) {
-    this.view.x = x;
+    this._view.x = x;
   }
 
   get y() {
-    return this.view.y;
+    return this._view.y;
   }
 
   set y(y: number) {
-    this.view.y = y;
+    this._view.y = y;
   }
 
   get getPrevPoint() {
@@ -70,7 +66,7 @@ export default class Runner {
     if (this.velocityY > 0) {
       if (!(this.state === STATES.jump || this.state === STATES.flyDown)) {
         if (Math.random() > 0.4) {
-          this.view.showFall();
+          this._view.showFall();
         } else {
           this.jump();
         }
@@ -96,14 +92,14 @@ export default class Runner {
     this.velocityY = 0;
     this.state = STATES.stay;
 
-    this.y = platformY - this.view.collisionBox.height;
+    this.y = platformY - this._view.collisionBox.height;
   }
 
   public jump() {
     if (this.state === STATES.jump || this.state === STATES.flyDown) return;
     this.state = STATES.jump;
     this.velocityY -= this.JUMP_FORCE;
-    this.view.showJump();
+    this._view.showJump();
   }
 
   public isJumpState() {
@@ -111,18 +107,18 @@ export default class Runner {
   }
 
   public setView(buttonContext: {[key: string]: boolean}) {
-    this.view.flip(this.movement.x);
+    this._view.flip(this.movement.x);
 
     if (this.isJumpState() || this.state === STATES.flyDown) return;
 
     if (buttonContext.arrowLeft || buttonContext.arrowRight) {
-      this.view.showRun();
+      this._view.showRun();
     }
   }
 
   public removeFromParent() {
-    if (this.view.parent !== null) {
-      this.view.removeFromParent();
+    if (this._view.parent !== null) {
+      this._view.removeFromParent();
     }
   }
 }

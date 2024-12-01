@@ -9,6 +9,7 @@ import BulletFactory from "./Entities/Bullets/BulletFactory";
 import Bullet from "./Entities/Bullets/Bullet";
 import RunnerFactory from "./Entities/Enemies/Runner/RunnerFactory";
 import Runner from "./Entities/Enemies/Runner/Runner";
+import HeroFactory from "./Entities/Hero/HeroFactory";
 
 export default class Game {
   private app;
@@ -28,9 +29,9 @@ export default class Game {
     this.worldContainer = new Container();
     this.app.stage.addChild(this.worldContainer);
 
-    this.hero = new Hero(this.worldContainer);
-    this.hero.x = 100;
-    this.hero.y = 250;
+    const heroFactory = new HeroFactory(this.worldContainer);
+
+    this.hero = heroFactory.create(100, 100);
 
     const platformFactory = new PlatformFactory(this.worldContainer);
 
@@ -59,7 +60,7 @@ export default class Game {
     };
     this.camera = new Camera(cameraSettings);
 
-    this.bulletFactory = new BulletFactory();
+    this.bulletFactory = new BulletFactory(this.worldContainer);
 
     this.runnerFactory = new RunnerFactory(this.worldContainer);
     this.enemies.push(this.runnerFactory.create(800, 150));
@@ -182,7 +183,6 @@ export default class Game {
   setKeys() {
     this.keyboardProcessor.getButton("KeyA").executeDown = () => {
       const bullet = this.bulletFactory.createBullet(this.hero.bulletContext);
-      this.worldContainer.addChild(bullet);
       this.bullets.push(bullet);
     };
 

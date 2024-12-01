@@ -1,18 +1,12 @@
-import {Container, Graphics} from "pixi.js";
+import Entity from "../Entity";
 
-export default class Bullet extends Container {
+export default class Bullet extends Entity {
   private SPEED = 10;
   public bulletAngle;
-  public isDead = false;
-  constructor(bulletAngle: number) {
-    super();
+  constructor(view: any, bulletAngle: number) {
+    super(view);
 
     this.bulletAngle = bulletAngle * (Math.PI / 180);
-
-    const view = new Graphics();
-    view.rect(0, 0, 5, 5);
-    view.stroke(0xffff00);
-    this.addChild(view);
   }
 
   update() {
