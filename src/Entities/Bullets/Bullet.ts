@@ -2,7 +2,8 @@ import {Container, Graphics} from "pixi.js";
 
 export default class Bullet extends Container {
   private SPEED = 10;
-  bulletAngle;
+  public bulletAngle;
+  public isDead = false;
   constructor(bulletAngle: number) {
     super();
 

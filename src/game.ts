@@ -7,6 +7,8 @@ import Box from "./Entities/Platforms/Box";
 import Camera, {CameraSettings} from "./Camera";
 import BulletFactory from "./Entities/Bullets/BulletFactory";
 import Bullet from "./Entities/Bullets/Bullet";
+import RunnerFactory from "./Entities/Enemies/Runner/RunnerFactory";
+import Runner from "./Entities/Enemies/Runner/Runner";
 
 export default class Game {
   private app;
@@ -16,6 +18,8 @@ export default class Game {
   private bulletFactory;
   private bullets: Bullet[] = [];
   private worldContainer: Container;
+  private enemies: Runner[] = [];
+  private runnerFactory;
 
   public keyboardProcessor;
   constructor(app: Application) {
@@ -31,7 +35,7 @@ export default class Game {
     const platformFactory = new PlatformFactory(this.worldContainer);
 
     this.platforms.push(platformFactory.createPlatform(100, 400));
-    this.platforms.push(platformFactory.createPlatform(300, 400));
+    // this.platforms.push(platformFactory.createPlatform(300, 400));
     this.platforms.push(platformFactory.createPlatform(500, 400));
     this.platforms.push(platformFactory.createPlatform(700, 400));
     this.platforms.push(platformFactory.createPlatform(1100, 400));
@@ -56,17 +60,42 @@ export default class Game {
     this.camera = new Camera(cameraSettings);
 
     this.bulletFactory = new BulletFactory();
+
+    this.runnerFactory = new RunnerFactory(this.worldContainer);
+    this.enemies.push(this.runnerFactory.create(800, 150));
+    this.enemies.push(this.runnerFactory.create(900, 150));
+    this.enemies.push(this.runnerFactory.create(1200, 150));
+    this.enemies.push(this.runnerFactory.create(1600, 150));
   }
 
   update() {
     this.hero.update();
 
+    for (let i = 0; i < this.enemies.length; i++) {
+      this.enemies[i].update();
+      let isDead = false;
+      for (let bullet of this.bullets) {
+        if (this.isCheckAABB(bullet, this.enemies[i].collisionBox)) {
+          isDead = true;
+          bullet.isDead = true;
+          break;
+        }
+      }
+      this.checkEnemy(this.enemies[i], i, isDead);
+    }
+
     for (let platform of this.platforms) {
       if (this.hero.isJumpState() && platform.type !== "box") {
         continue;
       }
-
       this.checkPlatformCollision(this.hero, platform);
+
+      for (let enemy of this.enemies) {
+        if (enemy.isJumpState() && platform.type !== "box") {
+          continue;
+        }
+        this.checkPlatformCollision(enemy, platform);
+      }
     }
 
     this.camera.update();
@@ -79,6 +108,7 @@ export default class Game {
 
   private checkBulletPosition(bullet: Bullet, index: number) {
     if (
+      bullet.isDead ||
       bullet.x > this.app.screen.width - this.worldContainer.x ||
       bullet.x < -this.worldContainer.x ||
       bullet.y > this.app.screen.height ||
@@ -91,7 +121,7 @@ export default class Game {
     }
   }
 
-  checkPlatformCollision(character: Hero, platform: Platform & Box) {
+  checkPlatformCollision(character: Hero | Runner, platform: Platform & Box) {
     const prevPoint = character.getPrevPoint;
     const collisionResult = this.getOrientCollisionResult(
       character.collisionBox,
@@ -101,7 +131,7 @@ export default class Game {
 
     if (collisionResult.vertical === true) {
       character.y = prevPoint.y;
-      this.hero.stay(platform.y);
+      character.stay(platform.y);
     }
 
     if (collisionResult.horizontal === true && platform.type == "box") {
@@ -219,5 +249,18 @@ export default class Game {
       this.keyboardProcessor.isButtonPressed("ArrowDown");
     buttonContext.shoot = this.keyboardProcessor.isButtonPressed("KeyA");
     return buttonContext;
+  }
+
+  private checkEnemy(enemy: Runner, index: number, isDead: boolean) {
+    if (
+      isDead ||
+      enemy.x > this.app.screen.width - this.worldContainer.x ||
+      enemy.x < -this.worldContainer.x ||
+      enemy.y > this.app.screen.height ||
+      enemy.y < 0
+    ) {
+      enemy.removeFromParent();
+      this.enemies.splice(index, 1);
+    }
   }
 }
