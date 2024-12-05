@@ -11,6 +11,7 @@ import Runner from "./Entities/Enemies/Runner/Runner";
 import HeroFactory from "./Entities/Hero/HeroFactory";
 import Physics from "./Physics";
 import TourelleFactory from "./Entities/Enemies/Tourelle/TourelleFactory";
+import Weapon from "./Weapon";
 
 export default class Game {
   private app;
@@ -21,6 +22,7 @@ export default class Game {
   private worldContainer: Container;
   private runnerFactory;
   private entities = [];
+  private weapon;
 
   public keyboardProcessor;
   constructor(app: Application) {
@@ -63,6 +65,8 @@ export default class Game {
     this.camera = new Camera(cameraSettings);
 
     this.bulletFactory = new BulletFactory(this.worldContainer, this.entities);
+    this.weapon = new Weapon(this.bulletFactory);
+    this.weapon.setWeapon(2);
 
     this.runnerFactory = new RunnerFactory(this.worldContainer);
     this.entities.push(this.runnerFactory.create(800, 150));
@@ -118,6 +122,10 @@ export default class Game {
       if (character.isJumpState() && platform.type !== "box") continue;
       this.checkPlatformCollision(character, platform);
     }
+
+    if (character.type === "hero" && character.x < -this.worldContainer.x) {
+      character.x = character.prevPoint.x;
+    }
   }
 
   private checkEntityStatus(entity: any, index: number) {
@@ -160,7 +168,9 @@ export default class Game {
 
   setKeys() {
     this.keyboardProcessor.getButton("KeyA").executeDown = () => {
-      this.bulletFactory.createBullet(this.hero.bulletContext);
+      if (!this.hero.isDead && !this.hero.isFall) {
+        this.weapon.startFire(this.hero.bulletContext);
+      }
     };
 
     this.keyboardProcessor.getButton("Space").executeDown = () => {

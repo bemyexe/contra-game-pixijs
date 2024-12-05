@@ -64,6 +64,7 @@ export default class Hero extends Entity {
     if (this.velocityY > 0) {
       if (!(this.state === STATES.jump || this.state === STATES.flyDown)) {
         this._view.showFall();
+        this.isFall = true;
       }
       this.state = STATES.flyDown;
     }
@@ -107,6 +108,7 @@ export default class Hero extends Entity {
   public throwDown() {
     this.state = STATES.jump;
     this._view.showFall();
+    this.isFall = true;
   }
 
   public startLeftMove() {
