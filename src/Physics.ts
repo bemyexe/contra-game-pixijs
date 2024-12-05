@@ -1,7 +1,14 @@
+interface RectProps {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 export default class Physics {
   static getOrientCollisionResult(
-    aaRect: {x: number; y: number; width: number; height: number},
-    bbRect: {x: number; y: number; width: number; height: number},
+    aaRect: RectProps,
+    bbRect: RectProps,
     aaPrevPoint: {x: number; y: number}
   ) {
     const collisionResult = {
@@ -23,10 +30,7 @@ export default class Physics {
     return collisionResult;
   }
 
-  static isCheckAABB(
-    entity: {x: number; y: number; width: number; height: number},
-    area: {x: number; y: number; width: number; height: number}
-  ) {
+  static isCheckAABB(entity: RectProps, area: RectProps) {
     return (
       entity.x < area.x + area.width &&
       entity.x + entity.width > area.x &&
