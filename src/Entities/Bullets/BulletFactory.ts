@@ -4,17 +4,21 @@ import BulletView from "./BulletView";
 
 export default class BulletFactory {
   private worldContainer;
-  constructor(worldContainer: Container) {
+  private entities: any[] = [];
+  constructor(worldContainer: Container, entities: any[]) {
     this.worldContainer = worldContainer;
+    this.entities = entities;
   }
 
-  public createBullet(bulletContext: {[key: string]: number}) {
+  public createBullet(bulletContext: {[key: string]: number & string}) {
     const view = new BulletView();
     this.worldContainer.addChild(view);
 
     const bullet = new Bullet(view, bulletContext.angle);
     bullet.x = bulletContext.x;
     bullet.y = bulletContext.y;
-    return bullet;
+    bullet.type = bulletContext.type;
+
+    this.entities.push(bullet);
   }
 }

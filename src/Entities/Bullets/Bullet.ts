@@ -3,6 +3,7 @@ import Entity from "../Entity";
 export default class Bullet extends Entity {
   private SPEED = 10;
   public bulletAngle;
+  public type: string = "";
   constructor(view: any, bulletAngle: number) {
     super(view);
 

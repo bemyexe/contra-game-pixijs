@@ -24,6 +24,7 @@ export default class Runner extends Entity {
 
   public isFall = false;
 
+  public type = "characterEnemy";
   constructor(view: any) {
     super(view);
 

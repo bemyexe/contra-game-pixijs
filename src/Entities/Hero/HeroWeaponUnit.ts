@@ -2,7 +2,12 @@ import HeroView from "./HeroView";
 
 export default class HeroWeaponUnit {
   private bulletAngle: number = 0;
-  private bulletContextField: {[key: string]: number} = {x: 0, y: 0, angle: 0};
+  private bulletContextField: {[key: string]: number | string} = {
+    x: 0,
+    y: 0,
+    angle: 0,
+    type: "heroBullet",
+  };
 
   private heroView;
 

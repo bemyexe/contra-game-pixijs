@@ -6,10 +6,11 @@ import KeyboardProcessor from "./KeyboardProcessor";
 import Box from "./Entities/Platforms/Box";
 import Camera, {CameraSettings} from "./Camera";
 import BulletFactory from "./Entities/Bullets/BulletFactory";
-import Bullet from "./Entities/Bullets/Bullet";
 import RunnerFactory from "./Entities/Enemies/Runner/RunnerFactory";
 import Runner from "./Entities/Enemies/Runner/Runner";
 import HeroFactory from "./Entities/Hero/HeroFactory";
+import Physics from "./Physics";
+import TourelleFactory from "./Entities/Enemies/Tourelle/TourelleFactory";
 
 export default class Game {
   private app;
@@ -17,10 +18,9 @@ export default class Game {
   private platforms: Platform[] & Box[] = [];
   private camera;
   private bulletFactory;
-  private bullets: Bullet[] = [];
   private worldContainer: Container;
-  private enemies: Runner[] = [];
   private runnerFactory;
+  private entities = [];
 
   public keyboardProcessor;
   constructor(app: Application) {
@@ -32,6 +32,8 @@ export default class Game {
     const heroFactory = new HeroFactory(this.worldContainer);
 
     this.hero = heroFactory.create(100, 100);
+
+    this.entities.push(this.hero);
 
     const platformFactory = new PlatformFactory(this.worldContainer);
 
@@ -60,71 +62,83 @@ export default class Game {
     };
     this.camera = new Camera(cameraSettings);
 
-    this.bulletFactory = new BulletFactory(this.worldContainer);
+    this.bulletFactory = new BulletFactory(this.worldContainer, this.entities);
 
     this.runnerFactory = new RunnerFactory(this.worldContainer);
-    this.enemies.push(this.runnerFactory.create(800, 150));
-    this.enemies.push(this.runnerFactory.create(900, 150));
-    this.enemies.push(this.runnerFactory.create(1200, 150));
-    this.enemies.push(this.runnerFactory.create(1600, 150));
+    this.entities.push(this.runnerFactory.create(800, 150));
+    this.entities.push(this.runnerFactory.create(900, 150));
+    this.entities.push(this.runnerFactory.create(1200, 150));
+    this.entities.push(this.runnerFactory.create(1600, 150));
+
+    const tourelleFactory = new TourelleFactory(
+      this.worldContainer,
+      this.hero,
+      this.bulletFactory
+    );
+    this.entities.push(tourelleFactory.create(500, 200));
   }
 
-  update() {
-    this.hero.update();
+  public update() {
+    for (let i = 0; i < this.entities.length; i++) {
+      const entity = this.entities[i];
+      entity.update();
 
-    for (let i = 0; i < this.enemies.length; i++) {
-      this.enemies[i].update();
-      let isDead = false;
-      for (let bullet of this.bullets) {
-        if (this.isCheckAABB(bullet, this.enemies[i].collisionBox)) {
-          isDead = true;
-          bullet.isDead = true;
-          break;
-        }
+      if (entity.type === "hero" || entity.type === "characterEnemy") {
+        this.checkDamage(entity);
+        this.checkPlatforms(entity);
       }
-      this.checkEnemy(this.enemies[i], i, isDead);
+      this.checkEntityStatus(entity, i);
     }
+    this.camera.update();
+  }
+
+  private checkDamage(entity: any) {
+    const damagers: any = this.entities.filter(
+      (damager: any) =>
+        (entity.type === "characterEnemy" && damager.type === "heroBullet") ||
+        (entity.type === "hero" &&
+          (damager.type === "enemyBullet" || damager.type === "characterEnemy"))
+    );
+
+    for (let damager of damagers) {
+      if (Physics.isCheckAABB(damager.collisionBox, entity.collisionBox)) {
+        entity.dead();
+        if (damager.type !== "characterEnemy") {
+          damager.dead();
+        }
+        break;
+      }
+    }
+  }
+
+  private checkPlatforms(character: any) {
+    if (character.isDead) return;
 
     for (let platform of this.platforms) {
-      if (this.hero.isJumpState() && platform.type !== "box") {
-        continue;
-      }
-      this.checkPlatformCollision(this.hero, platform);
-
-      for (let enemy of this.enemies) {
-        if (enemy.isJumpState() && platform.type !== "box") {
-          continue;
-        }
-        this.checkPlatformCollision(enemy, platform);
-      }
-    }
-
-    this.camera.update();
-
-    for (let i = 0; i < this.bullets.length; i++) {
-      this.bullets[i].update();
-      this.checkBulletPosition(this.bullets[i], i);
+      if (character.isJumpState() && platform.type !== "box") continue;
+      this.checkPlatformCollision(character, platform);
     }
   }
 
-  private checkBulletPosition(bullet: Bullet, index: number) {
-    if (
-      bullet.isDead ||
-      bullet.x > this.app.screen.width - this.worldContainer.x ||
-      bullet.x < -this.worldContainer.x ||
-      bullet.y > this.app.screen.height ||
-      bullet.y < 0
-    ) {
-      if (bullet.parent !== null) {
-        bullet.removeFromParent();
-      }
-      this.bullets.splice(index, 1);
+  private checkEntityStatus(entity: any, index: number) {
+    if (entity.isDead || this.isScreenOut(entity)) {
+      entity.removeFromStage();
+      this.entities.splice(index, 1);
     }
+  }
+
+  private isScreenOut(entity: any) {
+    return (
+      entity.x > this.app.screen.width - this.worldContainer.x ||
+      entity.x < -this.worldContainer.x ||
+      entity.y > this.app.screen.height ||
+      entity.y < 0
+    );
   }
 
   checkPlatformCollision(character: Hero | Runner, platform: Platform & Box) {
     const prevPoint = character.getPrevPoint;
-    const collisionResult = this.getOrientCollisionResult(
+    const collisionResult = Physics.getOrientCollisionResult(
       character.collisionBox,
       platform,
       prevPoint
@@ -144,46 +158,9 @@ export default class Game {
     }
   }
 
-  getOrientCollisionResult(
-    aaRect: {x: number; y: number; width: number; height: number},
-    bbRect: {x: number; y: number; width: number; height: number},
-    aaPrevPoint: {x: number; y: number}
-  ) {
-    const collisionResult = {
-      horizontal: false,
-      vertical: false,
-    };
-
-    if (!this.isCheckAABB(aaRect, bbRect)) {
-      return collisionResult;
-    }
-
-    aaRect.y = aaPrevPoint.y;
-    if (!this.isCheckAABB(aaRect, bbRect)) {
-      collisionResult.vertical = true;
-      return collisionResult;
-    }
-
-    collisionResult.horizontal = true;
-    return collisionResult;
-  }
-
-  isCheckAABB(
-    entity: {x: number; y: number; width: number; height: number},
-    area: {x: number; y: number; width: number; height: number}
-  ) {
-    return (
-      entity.x < area.x + area.width &&
-      entity.x + entity.width > area.x &&
-      entity.y < area.y + area.height &&
-      entity.y + entity.height > area.y
-    );
-  }
-
   setKeys() {
     this.keyboardProcessor.getButton("KeyA").executeDown = () => {
-      const bullet = this.bulletFactory.createBullet(this.hero.bulletContext);
-      this.bullets.push(bullet);
+      this.bulletFactory.createBullet(this.hero.bulletContext);
     };
 
     this.keyboardProcessor.getButton("Space").executeDown = () => {
@@ -249,18 +226,5 @@ export default class Game {
       this.keyboardProcessor.isButtonPressed("ArrowDown");
     buttonContext.shoot = this.keyboardProcessor.isButtonPressed("KeyA");
     return buttonContext;
-  }
-
-  private checkEnemy(enemy: Runner, index: number, isDead: boolean) {
-    if (
-      isDead ||
-      enemy.x > this.app.screen.width - this.worldContainer.x ||
-      enemy.x < -this.worldContainer.x ||
-      enemy.y > this.app.screen.height ||
-      enemy.y < 0
-    ) {
-      enemy.removeFromParent();
-      this.enemies.splice(index, 1);
-    }
   }
 }

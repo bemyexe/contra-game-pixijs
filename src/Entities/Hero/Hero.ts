@@ -33,6 +33,8 @@ export default class Hero extends Entity {
 
   private heroWeaponUnit;
 
+  public type = "hero";
+
   constructor(view: any) {
     super(view);
 
