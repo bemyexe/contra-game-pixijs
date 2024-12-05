@@ -24,13 +24,15 @@ export default class Runner extends Entity {
 
   public isFall = false;
 
-  public type = "characterEnemy";
+  public type = "enemy";
   constructor(view: any) {
     super(view);
 
     this.state = STATES.jump;
     this._view.showJump();
     this.movement.x = -1;
+
+    this.gravitable = true;
   }
 
   get collisionBox() {
@@ -79,6 +81,10 @@ export default class Runner extends Entity {
 
     this.velocityY += this.GRAVITY_FORCE;
     this.y += this.velocityY;
+  }
+
+  public damage() {
+    this.dead();
   }
 
   public stay(platformY: number) {

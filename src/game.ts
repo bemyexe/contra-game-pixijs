@@ -83,7 +83,7 @@ export default class Game {
       const entity = this.entities[i];
       entity.update();
 
-      if (entity.type === "hero" || entity.type === "characterEnemy") {
+      if (entity.type === "hero" || entity.type === "enemy") {
         this.checkDamage(entity);
         this.checkPlatforms(entity);
       }
@@ -95,15 +95,15 @@ export default class Game {
   private checkDamage(entity: any) {
     const damagers: any = this.entities.filter(
       (damager: any) =>
-        (entity.type === "characterEnemy" && damager.type === "heroBullet") ||
+        (entity.type === "enemy" && damager.type === "heroBullet") ||
         (entity.type === "hero" &&
-          (damager.type === "enemyBullet" || damager.type === "characterEnemy"))
+          (damager.type === "enemyBullet" || damager.type === "enemy"))
     );
 
     for (let damager of damagers) {
       if (Physics.isCheckAABB(damager.collisionBox, entity.collisionBox)) {
-        entity.dead();
-        if (damager.type !== "characterEnemy") {
+        entity.damage();
+        if (damager.type !== "enemy") {
           damager.dead();
         }
         break;
@@ -112,7 +112,7 @@ export default class Game {
   }
 
   private checkPlatforms(character: any) {
-    if (character.isDead) return;
+    if (character.isDead || !character.gravitable) return;
 
     for (let platform of this.platforms) {
       if (character.isJumpState() && platform.type !== "box") continue;

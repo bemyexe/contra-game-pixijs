@@ -42,6 +42,8 @@ export default class Hero extends Entity {
 
     this.state = STATES.jump;
     this._view.showJump();
+
+    this.gravitable = true;
   }
 
   get bulletContext() {
@@ -68,6 +70,10 @@ export default class Hero extends Entity {
 
     this.velocityY += this.GRAVITY_FORCE;
     this.y += this.velocityY;
+  }
+
+  public damage() {
+    this.dead();
   }
 
   public stay(platformY: number) {

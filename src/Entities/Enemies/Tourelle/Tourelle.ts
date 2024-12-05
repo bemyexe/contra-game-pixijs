@@ -6,6 +6,8 @@ export default class Tourelle extends Entity {
   private target;
   private bulletFactory;
   private timeCounter = 0;
+  private health = 5;
+  public type = "enemy";
 
   constructor(view: any, target: Hero, bulletFactory: BulletFactory) {
     super(view);
@@ -19,6 +21,14 @@ export default class Tourelle extends Entity {
     let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x);
     this._view.gunRotation = angle;
     this.fire(angle);
+  }
+
+  public damage() {
+    this.health--;
+
+    if (this.health < 1) {
+      this.dead();
+    }
   }
 
   private fire(angle: number) {
