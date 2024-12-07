@@ -2,11 +2,20 @@ import {Container, Graphics} from "pixi.js";
 
 export default class HeroView extends Container {
   private bounds = {
-    width: 20,
-    height: 90,
+    width: 0,
+    height: 0,
   };
 
   private collision = {x: 0, y: 0, width: 0, height: 0};
+
+  private hitBoxx = {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    shiftX: 0,
+    shiftY: 0,
+  };
 
   private stm = {
     currentState: "default",
@@ -27,16 +36,14 @@ export default class HeroView extends Container {
     this.collision.width = this.bounds.width;
     this.collision.height = this.bounds.height;
 
-    this.stm.states = {
-      stay: this.getStayImage(),
-      stayUp: this.getStayUpImage(),
-      run: this.getRunImage(),
-      runUp: this.getRunUpImage(),
-      runDown: this.getRunDownImage(),
-      lay: this.getLayImage(),
-      jump: this.getJumpImage(),
-      fall: this.getFallImage(),
-    };
+    this.stm.states.stay = this.getStayImage();
+    this.stm.states.stayUp = this.getStayUpImage();
+    this.stm.states.run = this.getRunImage();
+    this.stm.states.runUp = this.getRunUpImage();
+    this.stm.states.runDown = this.getRunDownImage();
+    this.stm.states.lay = this.getLayImage();
+    this.stm.states.jump = this.getJumpImage();
+    this.stm.states.fall = this.getFallImage();
 
     for (let key in this.stm.states) {
       this.rootNode.addChild(this.stm.states[key]);
@@ -53,6 +60,12 @@ export default class HeroView extends Container {
     this.stm.states[key].visible = true;
 
     this.stm.currentState = key;
+  }
+
+  get hitBox() {
+    this.hitBoxx.x = this.x + this.hitBoxx.shiftX;
+    this.hitBoxx.y = this.y + this.hitBoxx.shiftY;
+    return this.hitBoxx;
   }
 
   get collisionBox() {
@@ -77,40 +90,80 @@ export default class HeroView extends Container {
   public showStay() {
     this.toState("stay");
     this.setBulletPointsShift(60, 30);
+
+    this.hitBox.width = 20;
+    this.hitBox.height = 90;
+    this.hitBox.shiftX = 0;
+    this.hitBox.shiftY = 0;
   }
 
   public showRun() {
     this.toState("run");
     this.setBulletPointsShift(65, 30);
+
+    this.hitBox.width = 20;
+    this.hitBox.height = 90;
+    this.hitBox.shiftX = 0;
+    this.hitBox.shiftY = 0;
   }
 
   public showJump() {
     this.toState("jump");
     this.setBulletPointsShift(-2, 40);
+
+    this.hitBox.width = 40;
+    this.hitBox.height = 40;
+    this.hitBox.shiftX = -10;
+    this.hitBox.shiftY = 25;
   }
 
   public showFall() {
     this.toState("fall");
+
+    this.hitBox.width = 20;
+    this.hitBox.height = 90;
+    this.hitBox.shiftX = 0;
+    this.hitBox.shiftY = 0;
   }
 
   public showLay() {
     this.toState("lay");
     this.setBulletPointsShift(65, 70);
+
+    this.hitBox.width = 90;
+    this.hitBox.height = 20;
+    this.hitBox.shiftX = -45;
+    this.hitBox.shiftY = 70;
   }
 
   public showStayUp() {
     this.toState("stayUp");
     this.setBulletPointsShift(-2, -40);
+
+    this.hitBox.width = 20;
+    this.hitBox.height = 90;
+    this.hitBox.shiftX = 0;
+    this.hitBox.shiftY = 0;
   }
 
   public showRunUp() {
     this.toState("runUp");
     this.setBulletPointsShift(40, -20);
+
+    this.hitBox.width = 20;
+    this.hitBox.height = 90;
+    this.hitBox.shiftX = 0;
+    this.hitBox.shiftY = 0;
   }
 
   public showRunDown() {
     this.toState("runDown");
     this.setBulletPointsShift(20, 55);
+
+    this.hitBox.width = 20;
+    this.hitBox.height = 90;
+    this.hitBox.shiftX = 0;
+    this.hitBox.shiftY = 0;
   }
 
   public flip(direction: number) {
