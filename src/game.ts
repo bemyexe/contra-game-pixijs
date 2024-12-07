@@ -1,26 +1,25 @@
-import {Application, Container} from "pixi.js";
+import {Application} from "pixi.js";
 import Hero from "./Entities/Hero/Hero";
 import Platform from "./Entities/Platforms/Platform";
 import PlatformFactory from "./Entities/Platforms/PlatformFactory";
 import KeyboardProcessor from "./KeyboardProcessor";
-import Box from "./Entities/Platforms/Box";
 import Camera, {CameraSettings} from "./Camera";
 import BulletFactory from "./Entities/Bullets/BulletFactory";
-import RunnerFactory from "./Entities/Enemies/Runner/RunnerFactory";
 import Runner from "./Entities/Enemies/Runner/Runner";
 import HeroFactory from "./Entities/Hero/HeroFactory";
 import Physics from "./Physics";
-import TourelleFactory from "./Entities/Enemies/Tourelle/TourelleFactory";
 import Weapon from "./Weapon";
+import World from "./World";
+import EnemiesFactory from "./Entities/Enemies/EnemiesFactory";
+import SceneFactory from "./SceneFactory";
 
 export default class Game {
   private app;
   private hero;
-  private platforms: Platform[] & Box[] = [];
+  private platforms: Platform[] = [];
   private camera;
   private bulletFactory;
-  private worldContainer: Container;
-  private runnerFactory;
+  private worldContainer: World;
   private entities = [];
   private weapon;
 
@@ -28,33 +27,39 @@ export default class Game {
   constructor(app: Application) {
     this.app = app;
 
-    this.worldContainer = new Container();
+    this.worldContainer = new World();
     this.app.stage.addChild(this.worldContainer);
+    this.bulletFactory = new BulletFactory(
+      this.worldContainer.game,
+      this.entities
+    );
+    const heroFactory = new HeroFactory(this.worldContainer.game);
 
-    const heroFactory = new HeroFactory(this.worldContainer);
-
-    this.hero = heroFactory.create(100, 100);
+    this.hero = heroFactory.create(160, 100);
 
     this.entities.push(this.hero);
 
+    const enemyFactory = new EnemiesFactory(
+      this.worldContainer.game,
+      this.hero,
+      this.bulletFactory,
+      this.entities
+    );
+
     const platformFactory = new PlatformFactory(this.worldContainer);
 
-    this.platforms.push(platformFactory.createPlatform(100, 400));
-    // this.platforms.push(platformFactory.createPlatform(300, 400));
-    this.platforms.push(platformFactory.createPlatform(500, 400));
-    this.platforms.push(platformFactory.createPlatform(700, 400));
-    this.platforms.push(platformFactory.createPlatform(1100, 400));
+    const sceneFactory = new SceneFactory(
+      this.platforms,
+      this.entities,
+      platformFactory,
+      enemyFactory,
+      this.hero
+    );
+    sceneFactory.createScene();
 
-    this.platforms.push(platformFactory.createPlatform(300, 550));
-
-    this.platforms.push(platformFactory.createBox(0, 738));
-    this.platforms.push(platformFactory.createBox(200, 738));
-
-    const box = platformFactory.createBox(400, 708);
-    box.isStep = true;
-    this.platforms.push(box);
     this.keyboardProcessor = new KeyboardProcessor(this);
     this.setKeys();
+
     const cameraSettings: CameraSettings = {
       target: this.hero,
       world: this.worldContainer,
@@ -64,27 +69,13 @@ export default class Game {
     };
     this.camera = new Camera(cameraSettings);
 
-    this.bulletFactory = new BulletFactory(this.worldContainer, this.entities);
     this.weapon = new Weapon(this.bulletFactory);
-    this.weapon.setWeapon(2);
-
-    this.runnerFactory = new RunnerFactory(this.worldContainer);
-    this.entities.push(this.runnerFactory.create(800, 150));
-    this.entities.push(this.runnerFactory.create(900, 150));
-    this.entities.push(this.runnerFactory.create(1200, 150));
-    this.entities.push(this.runnerFactory.create(1600, 150));
-
-    const tourelleFactory = new TourelleFactory(
-      this.worldContainer,
-      this.hero,
-      this.bulletFactory
-    );
-    this.entities.push(tourelleFactory.create(500, 200));
+    this.weapon.setWeapon(1);
   }
 
   public update() {
     for (let i = 0; i < this.entities.length; i++) {
-      const entity = this.entities[i];
+      const entity: any = this.entities[i];
       entity.update();
 
       if (entity.type === "hero" || entity.type === "enemy") {
@@ -105,7 +96,7 @@ export default class Game {
     );
 
     for (let damager of damagers) {
-      if (Physics.isCheckAABB(damager.collisionBox, entity.collisionBox)) {
+      if (Physics.isCheckAABB(damager.hitBox, entity.hitBox)) {
         entity.damage();
         if (damager.type !== "enemy") {
           damager.dead();
@@ -119,7 +110,11 @@ export default class Game {
     if (character.isDead || !character.gravitable) return;
 
     for (let platform of this.platforms) {
-      if (character.isJumpState() && platform.type !== "box") continue;
+      if (
+        (character.isJumpState() && platform.type !== "box") ||
+        !platform.isActive
+      )
+        continue;
       this.checkPlatformCollision(character, platform);
     }
 
@@ -136,15 +131,21 @@ export default class Game {
   }
 
   private isScreenOut(entity: any) {
-    return (
-      entity.x > this.app.screen.width - this.worldContainer.x ||
-      entity.x < -this.worldContainer.x ||
-      entity.y > this.app.screen.height ||
-      entity.y < 0
-    );
+    if (entity.type === "heroBullet" || entity.type === "enemyBullet") {
+      return (
+        entity.x > this.app.screen.width - this.worldContainer.x ||
+        entity.x < -this.worldContainer.x ||
+        entity.y > this.app.screen.height ||
+        entity.y < 0
+      );
+    } else if (entity.type === "enemy" || entity.type === "hero") {
+      return (
+        entity.x < -this.worldContainer.x || entity.y > this.app.screen.height
+      );
+    }
   }
 
-  checkPlatformCollision(character: Hero | Runner, platform: Platform & Box) {
+  checkPlatformCollision(character: Hero | Runner, platform: Platform) {
     const prevPoint = character.getPrevPoint;
     const collisionResult = Physics.getOrientCollisionResult(
       character.collisionBox,
@@ -169,7 +170,7 @@ export default class Game {
   setKeys() {
     this.keyboardProcessor.getButton("KeyA").executeDown = () => {
       if (!this.hero.isDead && !this.hero.isFall) {
-        this.weapon.startFire(this.hero.bulletContext);
+        this.weapon.fire(this.hero.bulletContext);
       }
     };
 

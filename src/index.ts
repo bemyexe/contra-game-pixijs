@@ -2,7 +2,6 @@ import {Application} from "pixi.js";
 import Game from "./game";
 
 const app = new Application();
-
 (async () => {
   await setup();
   const game = new Game(app);
