@@ -2,6 +2,7 @@ export default class Entity {
   _view;
 
   private isDeadState: boolean = false;
+  public isActive: boolean = false;
   private gravitableField: boolean = false;
 
   constructor(view: any) {
@@ -34,6 +35,17 @@ export default class Entity {
 
   get collisionBox() {
     return this._view.collisionBox;
+  }
+
+  get hitBox() {
+    return this._view.hitBox;
+  }
+
+  get getIsActive() {
+    return this.isActive;
+  }
+  set getIsActive(value) {
+    this.isActive = value;
   }
   get isDead() {
     return this.isDeadState;

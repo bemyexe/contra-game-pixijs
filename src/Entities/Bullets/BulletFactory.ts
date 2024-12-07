@@ -10,7 +10,7 @@ export default class BulletFactory {
     this.entities = entities;
   }
 
-  public createBullet(bulletContext: {[key: string]: number & string}) {
+  public createBullet(bulletContext: {[key: string]: any}) {
     const view = new BulletView();
     this.worldContainer.addChild(view);
 
