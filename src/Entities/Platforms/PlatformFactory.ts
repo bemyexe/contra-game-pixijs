@@ -13,16 +13,16 @@ export default class PlatformFactory {
   }
   createPlatform(x: number, y: number) {
     const skin = new Graphics();
-    skin.stroke(0x004220);
-    skin.fill(0x00ff00);
     skin.rect(0, 0, this.platformWidth, this.platformHeight);
-    skin.fill(0x694216);
+    skin.fill(0x00ff00);
     skin.rect(
       0,
       this.platformHeight,
       this.platformWidth,
       this.platformHeight * 20
     );
+    skin.fill(0x694216);
+    skin.stroke(0x004220);
     const view = new PlatformView(this.platformWidth, this.platformHeight);
     view.addChild(skin);
     const platform = new Platform(view);
@@ -33,17 +33,18 @@ export default class PlatformFactory {
   }
   createBox(x: number, y: number) {
     const skin = new Graphics();
-    skin.stroke(0x004220);
-    skin.fill(0x00ff00);
+
     skin.rect(0, 0, this.platformWidth, this.platformHeight);
-    skin.lineTo(this.platformWidth, this.platformHeight);
-    skin.fill(0x694216);
+    skin.fill(0x00ff00);
+
     skin.rect(
       0,
       this.platformHeight,
       this.platformWidth,
       this.platformHeight * 20
     );
+    skin.fill(0x694216);
+    skin.stroke(0x004220);
     const view = new PlatformView(this.platformWidth, this.platformHeight);
     view.addChild(skin);
     const platform = new Platform(view);
@@ -60,10 +61,9 @@ export default class PlatformFactory {
   }
   createWater(x: number, y: number) {
     const skin = new Graphics();
-    skin.stroke(0x0000ff);
-    skin.fill(0x0000ff);
+
     skin.rect(0, -this.platformHeight, this.platformWidth, this.platformHeight);
-    skin.lineTo(this.platformWidth, this.platformHeight);
+    skin.fill(0x0000ff);
     const view = new PlatformView(this.platformWidth, this.platformHeight);
     view.addChild(skin);
     const platform = new Platform(view);
@@ -76,9 +76,10 @@ export default class PlatformFactory {
   createBossWall(x: number, y: number) {
     const skin = new Graphics();
     skin.stroke(0x0000ff);
-    skin.fill(0x0b1e0f2);
+
     skin.rect(0, 0, this.platformWidth * 3, 600);
-    skin.lineTo(this.platformWidth * 3, 600);
+    skin.fill(0x0b1e0f2);
+
     const view = new PlatformView(this.platformWidth * 3, 768);
     view.addChild(skin);
     const platform = new Platform(view);
@@ -91,8 +92,9 @@ export default class PlatformFactory {
   createBridge(x: number, y: number) {
     const skin = new Graphics();
     skin.stroke(0x111111);
-    skin.fill(0xffffff);
+
     skin.rect(0, 0, this.platformWidth, this.platformHeight * 3);
+    skin.fill(0xffffff);
     const view = new PlatformView(this.platformWidth, this.platformHeight);
     view.addChild(skin);
     const platform = new BridgePlatform(view);

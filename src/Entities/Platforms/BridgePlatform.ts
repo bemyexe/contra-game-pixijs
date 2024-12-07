@@ -1,11 +1,13 @@
+import Hero from "../Hero/Hero";
 import Platform from "./Platform";
+import PlatformView from "./PlatformView";
 
 export default class BridgePlatform extends Platform {
-  private target;
-  constructor(view) {
+  private target!: Hero;
+  constructor(view: PlatformView) {
     super(view);
   }
-  setTarget(target) {
+  setTarget(target: Hero) {
     this.target = target;
   }
   update() {

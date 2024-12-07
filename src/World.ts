@@ -8,11 +8,11 @@ export default class World extends Container {
     super();
 
     this.backgroundField = new Container();
-    this.addChild(this.background);
+    this.addChild(this.backgroundField);
     this.gameField = new Container();
-    this.addChild(this.game);
+    this.addChild(this.gameField);
     this.foregroundField = new Container();
-    this.addChild(this.foreground);
+    this.addChild(this.foregroundField);
   }
   get background() {
     return this.backgroundField;

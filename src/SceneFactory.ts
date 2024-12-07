@@ -9,7 +9,9 @@ export default class SceneFactory {
   private enemyFactory;
   private entities;
   private target;
+
   private blockSize = 128;
+
   constructor(
     platforms: Platform[],
     entities: any,
