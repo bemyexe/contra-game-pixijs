@@ -17,24 +17,26 @@ export default class Game {
   private app;
   private hero;
   private platforms: Platform[] = [];
+  private entities: any = [];
   private camera;
   private bulletFactory;
   private worldContainer: World;
-  private entities = [];
   private weapon;
 
   public keyboardProcessor;
+
   constructor(app: Application) {
     this.app = app;
 
     this.worldContainer = new World();
     this.app.stage.addChild(this.worldContainer);
+
     this.bulletFactory = new BulletFactory(
       this.worldContainer.game,
       this.entities
     );
-    const heroFactory = new HeroFactory(this.worldContainer.game);
 
+    const heroFactory = new HeroFactory(this.worldContainer.game);
     this.hero = heroFactory.create(160, 100);
 
     this.entities.push(this.hero);
@@ -123,33 +125,11 @@ export default class Game {
     }
   }
 
-  private checkEntityStatus(entity: any, index: number) {
-    if (entity.isDead || this.isScreenOut(entity)) {
-      entity.removeFromStage();
-      this.entities.splice(index, 1);
-    }
-  }
-
-  private isScreenOut(entity: any) {
-    if (entity.type === "heroBullet" || entity.type === "enemyBullet") {
-      return (
-        entity.x > this.app.screen.width - this.worldContainer.x ||
-        entity.x < -this.worldContainer.x ||
-        entity.y > this.app.screen.height ||
-        entity.y < 0
-      );
-    } else if (entity.type === "enemy" || entity.type === "hero") {
-      return (
-        entity.x < -this.worldContainer.x || entity.y > this.app.screen.height
-      );
-    }
-  }
-
-  checkPlatformCollision(character: Hero | Runner, platform: Platform) {
-    const prevPoint = character.getPrevPoint;
+  public checkPlatformCollision(character: Hero | Runner, platform: Platform) {
+    const prevPoint = character.prevPoint;
     const collisionResult = Physics.getOrientCollisionResult(
       character.collisionBox,
-      platform,
+      platform.collisionBox,
       prevPoint
     );
 
@@ -167,7 +147,7 @@ export default class Game {
     }
   }
 
-  setKeys() {
+  public setKeys() {
     this.keyboardProcessor.getButton("KeyA").executeDown = () => {
       if (!this.hero.isDead && !this.hero.isFall) {
         this.weapon.fire(this.hero.bulletContext);
@@ -237,5 +217,27 @@ export default class Game {
       this.keyboardProcessor.isButtonPressed("ArrowDown");
     buttonContext.shoot = this.keyboardProcessor.isButtonPressed("KeyA");
     return buttonContext;
+  }
+
+  private checkEntityStatus(entity: any, index: number) {
+    if (entity.isDead || this.isScreenOut(entity)) {
+      entity.removeFromStage();
+      this.entities.splice(index, 1);
+    }
+  }
+
+  private isScreenOut(entity: any) {
+    if (entity.type === "heroBullet" || entity.type === "enemyBullet") {
+      return (
+        entity.x > this.app.screen.width - this.worldContainer.x ||
+        entity.x < -this.worldContainer.x ||
+        entity.y > this.app.screen.height ||
+        entity.y < 0
+      );
+    } else if (entity.type === "enemy" || entity.type === "hero") {
+      return (
+        entity.x < -this.worldContainer.x || entity.y > this.app.screen.height
+      );
+    }
   }
 }

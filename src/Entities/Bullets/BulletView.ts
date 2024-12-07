@@ -1,7 +1,7 @@
 import {Container, Graphics} from "pixi.js";
 
 export default class BulletView extends Container {
-  private collisionBox = {x: 0, y: 0, width: 0, height: 0};
+  private collisionBoxField = {x: 0, y: 0, width: 0, height: 0};
 
   constructor() {
     super();
@@ -15,10 +15,10 @@ export default class BulletView extends Container {
     this.addChild(view);
   }
 
-  get getCollisionBox() {
-    this.collisionBox.x = this.x;
-    this.collisionBox.y = this.y;
-    return this.collisionBox;
+  get collisionBox() {
+    this.collisionBoxField.x = this.x;
+    this.collisionBoxField.y = this.y;
+    return this.collisionBoxField;
   }
 
   get hitBox() {

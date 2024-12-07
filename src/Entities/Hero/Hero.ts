@@ -11,7 +11,7 @@ export default class Hero extends Entity {
   private velocityX = 0;
   private velocityY = 0;
 
-  private prevPoint = {
+  private prevPointField = {
     x: 0,
     y: 0,
   };
@@ -50,13 +50,13 @@ export default class Hero extends Entity {
     return this.heroWeaponUnit.bulletContext;
   }
 
-  get getPrevPoint() {
-    return this.prevPoint;
+  get prevPoint() {
+    return this.prevPointField;
   }
 
   public update() {
-    this.prevPoint.x = this.x;
-    this.prevPoint.y = this.y;
+    this.prevPointField.x = this.x;
+    this.prevPointField.y = this.y;
 
     this.velocityX = this.movement.x * this.SPEED;
     this.x += this.velocityX;
