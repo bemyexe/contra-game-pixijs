@@ -2,8 +2,8 @@ import {Container, Graphics} from "pixi.js";
 
 export default class RunnerView extends Container {
   private bounds = {
-    width: 20,
-    height: 90,
+    width: 0,
+    height: 0,
   };
 
   private collision = {x: 0, y: 0, width: 0, height: 0};
@@ -25,11 +25,9 @@ export default class RunnerView extends Container {
     this.collision.width = this.bounds.width;
     this.collision.height = this.bounds.height;
 
-    this.stm.states = {
-      run: this.getRunImage(),
-      jump: this.getJumpImage(),
-      fall: this.getFallImage(),
-    };
+    this.stm.states.run = this.getRunImage();
+    this.stm.states.jump = this.getJumpImage();
+    this.stm.states.fall = this.getFallImage();
 
     for (let key in this.stm.states) {
       this.rootNode.addChild(this.stm.states[key]);
@@ -52,6 +50,10 @@ export default class RunnerView extends Container {
     this.collision.x = this.x;
     this.collision.y = this.y;
     return this.collision;
+  }
+
+  get hitBox() {
+    return this.collisionBox;
   }
 
   get isFliped() {
