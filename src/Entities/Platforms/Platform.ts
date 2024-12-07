@@ -1,11 +1,10 @@
-import { Container, Graphics } from 'pixi.js';
+import Entity from "../Entity";
 
-export default class Platform extends Container {
-  constructor() {
-    super();
-    const view = new Graphics();
-    view.rect(0, 0, 200, 30);
-    view.stroke(0x00ff00);
-    this.addChild(view);
+export default class Platform extends Entity {
+  type: string = "";
+  isStep: boolean = false;
+  constructor(view) {
+    super(view);
+    this.isActive = true;
   }
 }
