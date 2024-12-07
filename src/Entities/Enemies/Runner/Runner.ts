@@ -1,4 +1,5 @@
 import Entity from "../../Entity";
+import Hero from "../../Hero/Hero";
 
 const STATES = {stay: "stay", jump: "jump", flyDown: "flydown"};
 
@@ -19,20 +20,23 @@ export default class Runner extends Entity {
     x: 0,
     y: 0,
   };
-
+  private target;
   private state = STATES.stay;
 
-  public isFall = false;
+  public jumpBehaviorKoef = 0.4;
 
   public type = "enemy";
-  constructor(view: any) {
+
+  constructor(view: any, target: Hero) {
     super(view);
 
+    this.target = target;
     this.state = STATES.jump;
     this._view.showJump();
     this.movement.x = -1;
 
     this.gravitable = true;
+    this.isActive = false;
   }
 
   get collisionBox() {
@@ -60,6 +64,13 @@ export default class Runner extends Entity {
   }
 
   public update() {
+    if (!this.isActive) {
+      if (this.x - this.target.x < 512 + this.collisionBox.width * 2) {
+        this.isActive = true;
+      }
+      return;
+    }
+
     this.prevPoint.x = this.x;
     this.prevPoint.y = this.y;
 
@@ -68,7 +79,7 @@ export default class Runner extends Entity {
 
     if (this.velocityY > 0) {
       if (!(this.state === STATES.jump || this.state === STATES.flyDown)) {
-        if (Math.random() > 0.4) {
+        if (Math.random() > this.jumpBehaviorKoef) {
           this._view.showFall();
         } else {
           this.jump();
@@ -94,10 +105,9 @@ export default class Runner extends Entity {
       fakeButtonContext.arrowRight = this.movement.x == 1;
       this.state = STATES.stay;
       this.setView(fakeButtonContext);
-      this.isFall = false;
     }
-    this.velocityY = 0;
     this.state = STATES.stay;
+    this.velocityY = 0;
 
     this.y = platformY - this._view.collisionBox.height;
   }
