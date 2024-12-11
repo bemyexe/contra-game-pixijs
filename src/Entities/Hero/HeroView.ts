@@ -1,4 +1,5 @@
-import {Container, Graphics} from "pixi.js";
+import {AnimatedSprite, Container, Graphics, Sprite} from "pixi.js";
+import AssetsFactory from "../../AssetsFactory";
 
 export default class HeroView extends Container {
   private bounds = {
@@ -25,8 +26,11 @@ export default class HeroView extends Container {
   private bulletPointsShiftField = {x: 0, y: 0};
 
   private rootNode!: Container;
-  constructor() {
+  private assets;
+  constructor(assets: AssetsFactory) {
     super();
+
+    this.assets = assets;
 
     this.createNodeStructure();
     this.rootNode.pivot.x = 10;
@@ -181,10 +185,11 @@ export default class HeroView extends Container {
   }
 
   private getStayImage() {
-    const view = new Graphics();
-    view.rect(0, 0, 20, 90);
-    view.rect(0, 30, 60, 10);
-    view.stroke(0xffff00);
+    // const view = new Graphics();
+    // view.rect(0, 0, 20, 90);
+    // view.rect(0, 30, 60, 10);
+    // view.stroke(0xffff00);
+    const view = new Sprite(this.assets.getTexture("stay0000"));
     return view;
   }
 
@@ -193,15 +198,21 @@ export default class HeroView extends Container {
     view.rect(0, 0, 20, 90);
     view.rect(8, -40, 5, 40);
     view.stroke(0xffff00);
+
     return view;
   }
 
   private getRunImage() {
-    const view = new Graphics();
-    view.rect(0, 0, 20, 90);
-    view.rect(0, 30, 70, 5);
-    view.stroke(0xffff00);
-    view.skew.x = -0.1;
+    // const view = new Graphics();
+    // view.rect(0, 0, 20, 90);
+    // view.rect(0, 30, 70, 5);
+    // view.stroke(0xffff00);
+    // view.skew.x = -0.1;
+
+    const view = new AnimatedSprite(this.assets.getAnimationTextures("run"));
+    view.animationSpeed = 0.1;
+    view.play();
+    view.y -= 3;
     return view;
   }
 
@@ -214,6 +225,7 @@ export default class HeroView extends Container {
     view.lineTo(0, 40);
     view.stroke(0xffff00);
     view.skew.x = -0.1;
+
     return view;
   }
 

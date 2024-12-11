@@ -12,6 +12,7 @@ import Weapon from "./Weapon";
 import World from "./World";
 import EnemiesFactory from "./Entities/Enemies/EnemiesFactory";
 import SceneFactory from "./SceneFactory";
+import AssetsFactory from "./AssetsFactory";
 
 export default class Game {
   private app;
@@ -25,7 +26,7 @@ export default class Game {
 
   public keyboardProcessor;
 
-  constructor(app: Application) {
+  constructor(app: Application, assets: AssetsFactory) {
     this.app = app;
 
     this.worldContainer = new World();
@@ -36,7 +37,7 @@ export default class Game {
       this.entities
     );
 
-    const heroFactory = new HeroFactory(this.worldContainer.game);
+    const heroFactory = new HeroFactory(this.worldContainer.game, assets);
     this.hero = heroFactory.create(160, 100);
 
     this.entities.push(this.hero);
@@ -72,7 +73,7 @@ export default class Game {
     this.camera = new Camera(cameraSettings);
 
     this.weapon = new Weapon(this.bulletFactory);
-    this.weapon.setWeapon(1);
+    this.weapon.setWeapon(2);
   }
 
   public update() {

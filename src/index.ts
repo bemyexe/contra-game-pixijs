@@ -1,10 +1,17 @@
-import {Application} from "pixi.js";
+import {Application, Assets} from "pixi.js";
 import Game from "./game";
+import AssetsFactory from "./AssetsFactory";
 
 const app = new Application();
 (async () => {
   await setup();
-  const game = new Game(app);
+
+  await Assets.load("assets/atlas.png");
+  await Assets.load("assets/atlas.json");
+
+  const assets = new AssetsFactory();
+
+  const game = new Game(app, assets);
   document.addEventListener("keydown", (key) => {
     game.keyboardProcessor.onKeyDown(key);
   });

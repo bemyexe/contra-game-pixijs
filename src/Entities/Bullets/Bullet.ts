@@ -1,7 +1,7 @@
 import Entity from "../Entity";
 
 export default class Bullet extends Entity {
-  private SPEED = 10;
+  public speed = 10;
   public bulletAngle;
   public type: string = "";
   constructor(view: any, bulletAngle: number) {
@@ -11,7 +11,7 @@ export default class Bullet extends Entity {
   }
 
   update() {
-    this.x += this.SPEED * Math.cos(this.bulletAngle);
-    this.y += this.SPEED * Math.sin(this.bulletAngle);
+    this.x += this.speed * Math.cos(this.bulletAngle);
+    this.y += this.speed * Math.sin(this.bulletAngle);
   }
 }
