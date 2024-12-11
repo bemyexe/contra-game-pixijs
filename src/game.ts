@@ -1,18 +1,18 @@
-import {Application} from "pixi.js";
-import Hero from "./Entities/Hero/Hero";
-import Platform from "./Entities/Platforms/Platform";
-import PlatformFactory from "./Entities/Platforms/PlatformFactory";
-import KeyboardProcessor from "./KeyboardProcessor";
-import Camera, {CameraSettings} from "./Camera";
-import BulletFactory from "./Entities/Bullets/BulletFactory";
-import Runner from "./Entities/Enemies/Runner/Runner";
-import HeroFactory from "./Entities/Hero/HeroFactory";
-import Physics from "./Physics";
-import Weapon from "./Weapon";
-import World from "./World";
-import EnemiesFactory from "./Entities/Enemies/EnemiesFactory";
-import SceneFactory from "./SceneFactory";
-import AssetsFactory from "./AssetsFactory";
+import { Application } from 'pixi.js';
+import Hero from './Entities/Hero/Hero';
+import Platform from './Entities/Platforms/Platform';
+import PlatformFactory from './Entities/Platforms/PlatformFactory';
+import KeyboardProcessor from './KeyboardProcessor';
+import Camera, { CameraSettings } from './Camera';
+import BulletFactory from './Entities/Bullets/BulletFactory';
+import Runner from './Entities/Enemies/Runner/Runner';
+import HeroFactory from './Entities/Hero/HeroFactory';
+import Physics from './Physics';
+import Weapon from './Weapon';
+import World from './World';
+import EnemiesFactory from './Entities/Enemies/EnemiesFactory';
+import SceneFactory from './SceneFactory';
+import AssetsFactory from './AssetsFactory';
 
 export default class Game {
   private app;
@@ -46,7 +46,8 @@ export default class Game {
       this.worldContainer.game,
       this.hero,
       this.bulletFactory,
-      this.entities
+      this.entities,
+      assets
     );
 
     const platformFactory = new PlatformFactory(this.worldContainer);
@@ -81,7 +82,7 @@ export default class Game {
       const entity: any = this.entities[i];
       entity.update();
 
-      if (entity.type === "hero" || entity.type === "enemy") {
+      if (entity.type === 'hero' || entity.type === 'enemy') {
         this.checkDamage(entity);
         this.checkPlatforms(entity);
       }
@@ -93,15 +94,15 @@ export default class Game {
   private checkDamage(entity: any) {
     const damagers: any = this.entities.filter(
       (damager: any) =>
-        (entity.type === "enemy" && damager.type === "heroBullet") ||
-        (entity.type === "hero" &&
-          (damager.type === "enemyBullet" || damager.type === "enemy"))
+        (entity.type === 'enemy' && damager.type === 'heroBullet') ||
+        (entity.type === 'hero' &&
+          (damager.type === 'enemyBullet' || damager.type === 'enemy'))
     );
 
     for (let damager of damagers) {
       if (Physics.isCheckAABB(damager.hitBox, entity.hitBox)) {
         entity.damage();
-        if (damager.type !== "enemy") {
+        if (damager.type !== 'enemy') {
           damager.dead();
         }
         break;
@@ -114,14 +115,14 @@ export default class Game {
 
     for (let platform of this.platforms) {
       if (
-        (character.isJumpState() && platform.type !== "box") ||
+        (character.isJumpState() && platform.type !== 'box') ||
         !platform.isActive
       )
         continue;
       this.checkPlatformCollision(character, platform);
     }
 
-    if (character.type === "hero" && character.x < -this.worldContainer.x) {
+    if (character.type === 'hero' && character.x < -this.worldContainer.x) {
       character.x = character.prevPoint.x;
     }
   }
@@ -139,7 +140,7 @@ export default class Game {
       character.stay(platform.y);
     }
 
-    if (collisionResult.horizontal === true && platform.type == "box") {
+    if (collisionResult.horizontal === true && platform.type == 'box') {
       if (platform.isStep) {
         character.stay(platform.y);
       } else {
@@ -149,24 +150,24 @@ export default class Game {
   }
 
   public setKeys() {
-    this.keyboardProcessor.getButton("KeyA").executeDown = () => {
+    this.keyboardProcessor.getButton('KeyA').executeDown = () => {
       if (!this.hero.isDead && !this.hero.isFall) {
         this.weapon.fire(this.hero.bulletContext);
         this.hero.setView(this.getArrowButtonContext());
       }
     };
-    this.keyboardProcessor.getButton("KeyA").executeUp = () => {
+    this.keyboardProcessor.getButton('KeyA').executeUp = () => {
       if (!this.hero.isDead && !this.hero.isFall) {
         this.hero.setView(this.getArrowButtonContext());
       }
     };
 
-    this.keyboardProcessor.getButton("Space").executeDown = () => {
+    this.keyboardProcessor.getButton('Space').executeDown = () => {
       if (
-        this.keyboardProcessor.isButtonPressed("ArrowDown") &&
+        this.keyboardProcessor.isButtonPressed('ArrowDown') &&
         !(
-          this.keyboardProcessor.isButtonPressed("ArrowLeft") ||
-          this.keyboardProcessor.isButtonPressed("ArrowRight")
+          this.keyboardProcessor.isButtonPressed('ArrowLeft') ||
+          this.keyboardProcessor.isButtonPressed('ArrowRight')
         )
       ) {
         this.hero.throwDown();
@@ -175,7 +176,7 @@ export default class Game {
       }
     };
 
-    const arrowLeft = this.keyboardProcessor.getButton("ArrowLeft");
+    const arrowLeft = this.keyboardProcessor.getButton('ArrowLeft');
     arrowLeft.executeDown = () => {
       this.hero.startLeftMove();
       this.hero.setView(this.getArrowButtonContext());
@@ -185,7 +186,7 @@ export default class Game {
       this.hero.setView(this.getArrowButtonContext());
     };
 
-    const arrowRight = this.keyboardProcessor.getButton("ArrowRight");
+    const arrowRight = this.keyboardProcessor.getButton('ArrowRight');
     arrowRight.executeDown = () => {
       this.hero.startRightMove();
       this.hero.setView(this.getArrowButtonContext());
@@ -196,7 +197,7 @@ export default class Game {
       this.hero.setView(this.getArrowButtonContext());
     };
 
-    const arrowUp = this.keyboardProcessor.getButton("ArrowUp");
+    const arrowUp = this.keyboardProcessor.getButton('ArrowUp');
     arrowUp.executeDown = () => {
       this.hero.setView(this.getArrowButtonContext());
     };
@@ -204,7 +205,7 @@ export default class Game {
       this.hero.setView(this.getArrowButtonContext());
     };
 
-    const arrowDown = this.keyboardProcessor.getButton("ArrowDown");
+    const arrowDown = this.keyboardProcessor.getButton('ArrowDown');
     arrowDown.executeDown = () => {
       this.hero.setView(this.getArrowButtonContext());
     };
@@ -214,15 +215,15 @@ export default class Game {
   }
 
   public getArrowButtonContext() {
-    const buttonContext: {[key: string]: boolean} = {};
+    const buttonContext: { [key: string]: boolean } = {};
     buttonContext.arrowLeft =
-      this.keyboardProcessor.isButtonPressed("ArrowLeft");
+      this.keyboardProcessor.isButtonPressed('ArrowLeft');
     buttonContext.arrowRight =
-      this.keyboardProcessor.isButtonPressed("ArrowRight");
-    buttonContext.arrowUp = this.keyboardProcessor.isButtonPressed("ArrowUp");
+      this.keyboardProcessor.isButtonPressed('ArrowRight');
+    buttonContext.arrowUp = this.keyboardProcessor.isButtonPressed('ArrowUp');
     buttonContext.arrowDown =
-      this.keyboardProcessor.isButtonPressed("ArrowDown");
-    buttonContext.shoot = this.keyboardProcessor.isButtonPressed("KeyA");
+      this.keyboardProcessor.isButtonPressed('ArrowDown');
+    buttonContext.shoot = this.keyboardProcessor.isButtonPressed('KeyA');
     return buttonContext;
   }
 
@@ -234,14 +235,14 @@ export default class Game {
   }
 
   private isScreenOut(entity: any) {
-    if (entity.type === "heroBullet" || entity.type === "enemyBullet") {
+    if (entity.type === 'heroBullet' || entity.type === 'enemyBullet') {
       return (
         entity.x > this.app.screen.width - this.worldContainer.x ||
         entity.x < -this.worldContainer.x ||
         entity.y > this.app.screen.height ||
         entity.y < 0
       );
-    } else if (entity.type === "enemy" || entity.type === "hero") {
+    } else if (entity.type === 'enemy' || entity.type === 'hero') {
       return (
         entity.x < -this.worldContainer.x || entity.y > this.app.screen.height
       );

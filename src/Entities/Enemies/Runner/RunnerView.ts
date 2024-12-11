@@ -1,4 +1,5 @@
-import {Container, Graphics} from "pixi.js";
+import { AnimatedSprite, Container, Sprite } from 'pixi.js';
+import AssetsFactory from '../../../AssetsFactory';
 
 export default class RunnerView extends Container {
   private bounds = {
@@ -6,17 +7,18 @@ export default class RunnerView extends Container {
     height: 0,
   };
 
-  private collision = {x: 0, y: 0, width: 0, height: 0};
+  private collision = { x: 0, y: 0, width: 0, height: 0 };
 
   private stm = {
-    currentState: "default",
-    states: {} as {[key: string]: Graphics},
+    currentState: 'default',
+    states: {} as { [key: string]: Sprite | Container },
   };
 
   private rootNode!: Container;
-  constructor() {
+  private assets: AssetsFactory;
+  constructor(assets: AssetsFactory) {
     super();
-
+    this.assets = assets;
     this.createNodeStructure();
     this.rootNode.pivot.x = 10;
     this.rootNode.x = 10;
@@ -61,15 +63,15 @@ export default class RunnerView extends Container {
   }
 
   public showRun() {
-    this.toState("run");
+    this.toState('run');
   }
 
   public showJump() {
-    this.toState("jump");
+    this.toState('jump');
   }
 
   public showFall() {
-    this.toState("fall");
+    this.toState('fall');
   }
 
   public flip(direction: number) {
@@ -87,28 +89,42 @@ export default class RunnerView extends Container {
   }
 
   private getRunImage() {
-    const view = new Graphics();
-    view.rect(0, 0, 20, 90);
-    view.stroke(0xff0000);
-    view.skew.x = -0.1;
+    // const view = new Graphics();
+    // view.rect(0, 0, 20, 90);
+    // view.stroke(0xff0000);
+    // view.skew.x = -0.1;
+
+    const view = new AnimatedSprite(
+      this.assets.getAnimationTextures('runnerrun')
+    );
+    view.animationSpeed = 0.1;
+    view.play();
+    view.y += 2;
+
     return view;
   }
 
   private getJumpImage() {
-    const view = new Graphics();
-    view.rect(0, 0, 40, 40);
-    view.stroke(0xff0000);
-    view.x -= 10;
-    view.y += 25;
+    // const view = new Graphics();
+    // view.rect(0, 0, 40, 40);
+    // view.stroke(0xff0000);
+    // view.x -= 10;
+    // view.y += 25;
+
+    const view = new Sprite(this.assets.getTexture('runnerjump0000'));
+
     return view;
   }
 
   private getFallImage() {
-    const view = new Graphics();
-    view.rect(0, 0, 20, 90);
-    view.rect(10, 20, 5, 60);
-    view.stroke(0xff0000);
-    view.skew.x = -0.1;
+    // const view = new Graphics();
+    // view.rect(0, 0, 20, 90);
+    // view.rect(10, 20, 5, 60);
+    // view.stroke(0xff0000);
+    // view.skew.x = -0.1;
+
+    const view = new Sprite(this.assets.getTexture('runnerjump0000'));
+
     return view;
   }
 }
