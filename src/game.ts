@@ -152,6 +152,12 @@ export default class Game {
     this.keyboardProcessor.getButton("KeyA").executeDown = () => {
       if (!this.hero.isDead && !this.hero.isFall) {
         this.weapon.fire(this.hero.bulletContext);
+        this.hero.setView(this.getArrowButtonContext());
+      }
+    };
+    this.keyboardProcessor.getButton("KeyA").executeUp = () => {
+      if (!this.hero.isDead && !this.hero.isFall) {
+        this.hero.setView(this.getArrowButtonContext());
       }
     };
 

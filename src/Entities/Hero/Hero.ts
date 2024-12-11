@@ -152,7 +152,11 @@ export default class Hero extends Entity {
       } else if (buttonContext.arrowDown) {
         this._view.showRunDown();
       } else {
-        this._view.showRun();
+        if (buttonContext.shoot) {
+          this._view.showRunShoot();
+        } else {
+          this._view.showRun();
+        }
       }
     } else {
       if (buttonContext.arrowUp) {

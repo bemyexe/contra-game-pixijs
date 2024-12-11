@@ -20,7 +20,7 @@ export default class HeroView extends Container {
 
   private stm = {
     currentState: "default",
-    states: {} as {[key: string]: Graphics},
+    states: {} as {[key: string]: Sprite | Container},
   };
 
   private bulletPointsShiftField = {x: 0, y: 0};
@@ -43,6 +43,7 @@ export default class HeroView extends Container {
     this.stm.states.stay = this.getStayImage();
     this.stm.states.stayUp = this.getStayUpImage();
     this.stm.states.run = this.getRunImage();
+    this.stm.states.runShoot = this.getRunShootImage();
     this.stm.states.runUp = this.getRunUpImage();
     this.stm.states.runDown = this.getRunDownImage();
     this.stm.states.lay = this.getLayImage();
@@ -104,6 +105,16 @@ export default class HeroView extends Container {
   public showRun() {
     this.toState("run");
     this.setBulletPointsShift(65, 30);
+
+    this.hitBox.width = 20;
+    this.hitBox.height = 90;
+    this.hitBox.shiftX = 0;
+    this.hitBox.shiftY = 0;
+  }
+
+  public showRunShoot() {
+    this.toState("runShoot");
+    this.setBulletPointsShift(50, 29);
 
     this.hitBox.width = 20;
     this.hitBox.height = 90;
@@ -189,15 +200,21 @@ export default class HeroView extends Container {
     // view.rect(0, 0, 20, 90);
     // view.rect(0, 30, 60, 10);
     // view.stroke(0xffff00);
+
     const view = new Sprite(this.assets.getTexture("stay0000"));
+
     return view;
   }
 
   private getStayUpImage() {
-    const view = new Graphics();
-    view.rect(0, 0, 20, 90);
-    view.rect(8, -40, 5, 40);
-    view.stroke(0xffff00);
+    // const view = new Graphics();
+    // view.rect(0, 0, 20, 90);
+    // view.rect(8, -40, 5, 40);
+    // view.stroke(0xffff00);
+
+    const view = new Sprite(this.assets.getTexture("stayup0000"));
+    view.x += 2;
+    view.y -= 31;
 
     return view;
   }
@@ -213,59 +230,122 @@ export default class HeroView extends Container {
     view.animationSpeed = 0.1;
     view.play();
     view.y -= 3;
+
     return view;
   }
 
+  private getRunShootImage() {
+    const container = new Container();
+
+    const upperPart = new Sprite(this.assets.getTexture("stay0000"));
+    upperPart.x = 8;
+    upperPart.y = 2;
+
+    const upperPartMask = new Graphics();
+    upperPartMask.rect(0, 0, 100, 45);
+    upperPartMask.fill(0xffffff);
+
+    upperPart.mask = upperPartMask;
+
+    const bottomPart = new AnimatedSprite(
+      this.assets.getAnimationTextures("run")
+    );
+    bottomPart.animationSpeed = 0.1;
+    bottomPart.play();
+    bottomPart.y -= 3;
+
+    const bottomPartMask = new Graphics();
+    bottomPartMask.rect(0, 45, 100, 45);
+    bottomPartMask.fill(0xffffff);
+
+    bottomPart.mask = bottomPartMask;
+
+    container.addChild(upperPart);
+    container.addChild(bottomPart);
+    container.addChild(upperPartMask);
+    container.addChild(bottomPartMask);
+
+    return container;
+  }
+
   private getRunUpImage() {
-    const view = new Graphics();
-    view.rect(0, 0, 20, 90);
-    view.lineTo(0, 30);
-    view.lineTo(40, -20);
-    view.lineTo(45, -15);
-    view.lineTo(0, 40);
-    view.stroke(0xffff00);
-    view.skew.x = -0.1;
+    // const view = new Graphics();
+    // view.rect(0, 0, 20, 90);
+    // view.lineTo(0, 30);
+    // view.lineTo(40, -20);
+    // view.lineTo(45, -15);
+    // view.lineTo(0, 40);
+    // view.stroke(0xffff00);
+    // view.skew.x = -0.1;
+
+    const view = new AnimatedSprite(this.assets.getAnimationTextures("runup"));
+    view.animationSpeed = 0.1;
+    view.play();
+    view.y -= 3;
 
     return view;
   }
 
   private getRunDownImage() {
-    const view = new Graphics();
-    view.rect(0, 0, 20, 90);
-    view.lineTo(0, 20);
-    view.lineTo(40, 60);
-    view.lineTo(35, 65);
-    view.lineTo(0, 30);
-    view.stroke(0xffff00);
-    view.skew.x = -0.1;
+    // const view = new Graphics();
+    // view.rect(0, 0, 20, 90);
+    // view.lineTo(0, 20);
+    // view.lineTo(40, 60);
+    // view.lineTo(35, 65);
+    // view.lineTo(0, 30);
+    // view.stroke(0xffff00);
+    // view.skew.x = -0.1;
+
+    const view = new AnimatedSprite(
+      this.assets.getAnimationTextures("rundown")
+    );
+    view.animationSpeed = 0.1;
+    view.play();
+    view.y -= 3;
+
     return view;
   }
 
   private getLayImage() {
-    const view = new Graphics();
-    view.rect(0, 0, 90, 20);
-    view.rect(90, 0, 40, 5);
-    view.stroke(0xffff00);
-    view.x -= 45;
-    view.y += 70;
+    // const view = new Graphics();
+    // view.rect(0, 0, 90, 20);
+    // view.rect(90, 0, 40, 5);
+    // view.stroke(0xffff00);
+    // view.x -= 45;
+    // view.y += 70;
+
+    const view = new Sprite(this.assets.getTexture("lay0000"));
+    view.x -= 25;
+    view.y += 50;
+
     return view;
   }
 
   private getJumpImage() {
-    const view = new Graphics();
-    view.rect(0, 0, 40, 40);
-    view.stroke(0xffff00);
+    // const view = new Graphics();
+    // view.rect(0, 0, 40, 40);
+    // view.stroke(0xffff00);
+    // view.x -= 10;
+    // view.y += 25;
+
+    const view = new AnimatedSprite(this.assets.getAnimationTextures("jump"));
+    view.animationSpeed = 0.1;
+    view.play();
+    view.y -= 3;
     view.x -= 10;
-    view.y += 25;
+
     return view;
   }
 
   private getFallImage() {
-    const view = new Graphics();
-    view.rect(0, 0, 20, 90);
-    view.rect(10, 20, 5, 60);
-    view.stroke(0xffff00);
-    view.skew.x = -0.1;
+    // const view = new Graphics();
+    // view.rect(0, 0, 20, 90);
+    // view.rect(10, 20, 5, 60);
+    // view.stroke(0xffff00);
+    // view.skew.x = -0.1;
+
+    const view = new Sprite(this.assets.getTexture("run0003"));
+
     return view;
   }
 }
