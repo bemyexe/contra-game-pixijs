@@ -42,6 +42,7 @@ export default class BulletFactory {
     bullet.x = bulletContext.x;
     bullet.y = bulletContext.y;
     bullet.type = bulletContext.type;
+    bullet.speed = 7;
 
     this.entities.push(bullet);
   }
