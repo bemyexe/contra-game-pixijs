@@ -1,8 +1,13 @@
-import BulletFactory from './Entities/Bullets/BulletFactory';
+import BulletFactory from "./Entities/Bullets/BulletFactory";
 
 export default class Weapon {
   private currentGunStrategy;
   private bulletFactory;
+
+  private count = 0;
+  private limit = 6;
+  private isFire = false;
+  private bulletContext: any;
 
   constructor(bulletFactory: BulletFactory) {
     this.bulletFactory = bulletFactory;
@@ -10,7 +15,17 @@ export default class Weapon {
     this.currentGunStrategy = this.defaultGunStrategy;
   }
 
-  setWeapon(type: number) {
+  public update(bulletContext: any) {
+    if (!this.isFire) {
+      return;
+    }
+    if (this.count % this.limit === 0) {
+      this.currentGunStrategy(bulletContext);
+    }
+    this.count++;
+  }
+
+  public setWeapon(type: number) {
     switch (type) {
       case 1:
         this.currentGunStrategy = this.defaultGunStrategy;
@@ -21,15 +36,20 @@ export default class Weapon {
     }
   }
 
-  fire(bulletContext: any) {
-    this.currentGunStrategy(bulletContext);
+  public startFire() {
+    this.isFire = true;
   }
 
-  defaultGunStrategy(bulletContext: any) {
+  public stopFire() {
+    this.isFire = false;
+    this.count = 0;
+  }
+
+  public defaultGunStrategy(bulletContext: any) {
     this.bulletFactory.createBullet(bulletContext);
   }
 
-  spreadGunStrategy(bulletContext: any) {
+  public spreadGunStrategy(bulletContext: any) {
     let angleShift = -20;
     for (let i = 0; i < 5; i++) {
       const localBulletContext = {
