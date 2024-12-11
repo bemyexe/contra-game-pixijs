@@ -1,6 +1,6 @@
-import {Container} from "pixi.js";
-import Bullet from "./Bullet";
-import BulletView from "./BulletView";
+import { Container, Graphics } from 'pixi.js';
+import Bullet from './Bullet';
+import BulletView from './BulletView';
 
 export default class BulletFactory {
   private worldContainer;
@@ -10,8 +10,32 @@ export default class BulletFactory {
     this.entities = entities;
   }
 
-  public createBullet(bulletContext: {[key: string]: any}) {
+  public createBullet(bulletContext: { [key: string]: any }) {
+    const skin = new Graphics();
+    skin.rect(0, 0, 5, 5);
+    skin.fill(0xffffff);
+
     const view = new BulletView();
+    view.addChild(skin);
+    this.worldContainer.addChild(view);
+
+    const bullet = new Bullet(view, bulletContext.angle);
+    bullet.x = bulletContext.x;
+    bullet.y = bulletContext.y;
+    bullet.type = bulletContext.type;
+
+    this.entities.push(bullet);
+  }
+
+  public createSpreadGunBullet(bulletContext: { [key: string]: any }) {
+    const skin = new Graphics();
+    skin.circle(0, 0, 6);
+    skin.fill(0xff2222);
+    skin.circle(-3, -3, 3);
+    skin.fill(0xdddddd);
+
+    const view = new BulletView();
+    view.addChild(skin);
     this.worldContainer.addChild(view);
 
     const bullet = new Bullet(view, bulletContext.angle);

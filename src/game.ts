@@ -50,7 +50,7 @@ export default class Game {
       assets
     );
 
-    const platformFactory = new PlatformFactory(this.worldContainer);
+    const platformFactory = new PlatformFactory(this.worldContainer, assets);
 
     const sceneFactory = new SceneFactory(
       this.platforms,

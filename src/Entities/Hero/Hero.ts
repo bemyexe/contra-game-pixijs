@@ -1,7 +1,7 @@
-import HeroWeaponUnit from "./HeroWeaponUnit";
-import Entity from "../Entity";
+import HeroWeaponUnit from './HeroWeaponUnit';
+import Entity from '../Entity';
 
-const STATES = {stay: "stay", jump: "jump", flyDown: "flydown"};
+const STATES = { stay: 'stay', jump: 'jump', flyDown: 'flydown' };
 
 export default class Hero extends Entity {
   private GRAVITY_FORCE = 0.2;
@@ -33,7 +33,7 @@ export default class Hero extends Entity {
 
   private heroWeaponUnit;
 
-  public type = "hero";
+  public type = 'hero';
 
   constructor(view: any) {
     super(view);
@@ -73,13 +73,11 @@ export default class Hero extends Entity {
     this.y += this.velocityY;
   }
 
-  public damage() {
-    this.dead();
-  }
+  public damage() {}
 
   public stay(platformY: number) {
     if (this.state === STATES.jump || this.state === STATES.flyDown) {
-      const fakeButtonContext: {[key: string]: boolean} = {};
+      const fakeButtonContext: { [key: string]: boolean } = {};
       fakeButtonContext.arrowLeft = this.movement.x == -1;
       fakeButtonContext.arrowRight = this.movement.x == 1;
       fakeButtonContext.arrowDown = this.isLay;
@@ -139,7 +137,7 @@ export default class Hero extends Entity {
     this.movement.x = this.directionContext.left;
   }
 
-  public setView(buttonContext: {[key: string]: boolean}) {
+  public setView(buttonContext: { [key: string]: boolean }) {
     this._view.flip(this.movement.x);
 
     this.heroWeaponUnit.setBulletAngle(buttonContext, this.isJumpState());

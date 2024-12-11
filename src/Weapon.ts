@@ -1,4 +1,4 @@
-import BulletFactory from "./Entities/Bullets/BulletFactory";
+import BulletFactory from './Entities/Bullets/BulletFactory';
 
 export default class Weapon {
   private currentGunStrategy;
@@ -38,7 +38,7 @@ export default class Weapon {
         angle: bulletContext.angle + angleShift,
         type: bulletContext.type,
       };
-      this.bulletFactory.createBullet(localBulletContext);
+      this.bulletFactory.createSpreadGunBullet(localBulletContext);
       angleShift += 10;
     }
   }
