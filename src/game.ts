@@ -13,6 +13,7 @@ import World from "./World";
 import EnemiesFactory from "./Entities/Enemies/EnemiesFactory";
 import SceneFactory from "./SceneFactory";
 import AssetsFactory from "./AssetsFactory";
+import Bullet from "./Entities/Bullets/Bullet";
 
 export default class Game {
   private app;
@@ -74,7 +75,7 @@ export default class Game {
     this.camera = new Camera(cameraSettings);
 
     this.weapon = new Weapon(this.bulletFactory);
-    this.weapon.setWeapon(1);
+    this.weapon.setWeapon(2);
   }
 
   public update() {
@@ -153,6 +154,12 @@ export default class Game {
   public setKeys() {
     this.keyboardProcessor.getButton("KeyA").executeDown = () => {
       if (!this.hero.isDead && !this.hero.isFall) {
+        const bullets = this.entities.filter(
+          (bullet: Bullet) => bullet.type === this.hero.bulletContext.type
+        );
+        if (bullets.length > 10) {
+          return;
+        }
         this.weapon.startFire();
         this.hero.setView(this.getArrowButtonContext());
       }

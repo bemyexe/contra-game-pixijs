@@ -7,7 +7,6 @@ export default class Weapon {
   private count = 0;
   private limit = 6;
   private isFire = false;
-  private bulletContext: any;
 
   constructor(bulletFactory: BulletFactory) {
     this.bulletFactory = bulletFactory;
@@ -50,6 +49,7 @@ export default class Weapon {
   }
 
   public spreadGunStrategy(bulletContext: any) {
+    this.limit = 40;
     let angleShift = -20;
     for (let i = 0; i < 5; i++) {
       const localBulletContext = {
