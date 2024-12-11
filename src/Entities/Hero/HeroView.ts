@@ -94,7 +94,7 @@ export default class HeroView extends Container {
   }
   public showStay() {
     this.toState("stay");
-    this.setBulletPointsShift(60, 30);
+    this.setBulletPointsShift(50, 29);
 
     this.hitBox.width = 20;
     this.hitBox.height = 90;
@@ -143,7 +143,7 @@ export default class HeroView extends Container {
 
   public showLay() {
     this.toState("lay");
-    this.setBulletPointsShift(65, 70);
+    this.setBulletPointsShift(50, 70);
 
     this.hitBox.width = 90;
     this.hitBox.height = 20;
@@ -153,7 +153,7 @@ export default class HeroView extends Container {
 
   public showStayUp() {
     this.toState("stayUp");
-    this.setBulletPointsShift(-2, -40);
+    this.setBulletPointsShift(18, -30);
 
     this.hitBox.width = 20;
     this.hitBox.height = 90;
@@ -163,7 +163,7 @@ export default class HeroView extends Container {
 
   public showRunUp() {
     this.toState("runUp");
-    this.setBulletPointsShift(40, -20);
+    this.setBulletPointsShift(40, 0);
 
     this.hitBox.width = 20;
     this.hitBox.height = 90;
@@ -173,7 +173,7 @@ export default class HeroView extends Container {
 
   public showRunDown() {
     this.toState("runDown");
-    this.setBulletPointsShift(20, 55);
+    this.setBulletPointsShift(47, 50);
 
     this.hitBox.width = 20;
     this.hitBox.height = 90;
