@@ -1,11 +1,9 @@
 import {Application} from 'pixi.js';
-import Hero from './Entities/Hero/Hero';
 import Platform from './Entities/Platforms/Platform';
 import PlatformFactory from './Entities/Platforms/PlatformFactory';
 import KeyboardProcessor from './KeyboardProcessor';
 import Camera, {CameraSettings} from './Camera';
 import BulletFactory from './Entities/Bullets/BulletFactory';
-import Runner from './Entities/Enemies/Runner/Runner';
 import HeroFactory from './Entities/Hero/HeroFactory';
 import Physics from './Physics';
 import Weapon from './Weapon';
@@ -15,7 +13,6 @@ import SceneFactory from './SceneFactory';
 import AssetsFactory from './AssetsFactory';
 import Bullet from './Entities/Bullets/Bullet';
 import PowerupFactory from './Entities/Powerups/PowerupFactory';
-import GravitableBullet from './Entities/Bullets/GravitableBullet';
 
 export default class Game {
   private app;
@@ -26,6 +23,7 @@ export default class Game {
   private bulletFactory;
   private worldContainer: World;
   private weapon;
+  private isEndGame = false;
 
   public keyboardProcessor;
 
@@ -106,6 +104,26 @@ export default class Game {
     }
     this.camera.update();
     this.weapon.update(this.hero.bulletContext);
+
+    this.checkGameStatus();
+  }
+
+  private checkGameStatus() {
+    if (this.isEndGame) {
+      return;
+    }
+
+    const isBossDead = this.entities.some(
+      (entity: any) => entity.isBoss && !entity.isActive
+    );
+
+    if (isBossDead) {
+      const enemies = this.entities.filter(
+        (entity: any) => entity.type === 'enemy' && !entity.isBoss
+      );
+      enemies.forEach((entity: any) => entity.dead());
+      this.isEndGame = true;
+    }
   }
 
   private checkDamage(entity: any) {

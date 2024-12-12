@@ -4,6 +4,7 @@ export default class Boss extends Entity {
   private health: number = 5;
 
   public type = 'enemy';
+  public isBoss = true;
 
   constructor(view: any) {
     super(view);
