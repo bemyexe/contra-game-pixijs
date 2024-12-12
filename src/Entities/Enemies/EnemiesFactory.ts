@@ -1,4 +1,4 @@
-import { Container } from 'pixi.js';
+import {Container} from 'pixi.js';
 import Runner from './Runner/Runner';
 import RunnerView from './Runner/RunnerView';
 import Tourelle from './Tourelle/Tourelle';
@@ -6,6 +6,8 @@ import TourelleView from './Tourelle/TourelleView';
 import Hero from '../Hero/Hero';
 import BulletFactory from '../Bullets/BulletFactory';
 import AssetsFactory from '../../AssetsFactory';
+import BossView from './Boss/BossView';
+import Boss from './Boss/Boss';
 
 export default class EnemiesFactory {
   private worldContainer;
@@ -27,7 +29,7 @@ export default class EnemiesFactory {
     this.entities = entities;
     this.assets = assets;
   }
-  createRunner(x: number, y: number) {
+  public createRunner(x: number, y: number) {
     const view = new RunnerView(this.assets);
     this.worldContainer.addChild(view);
     const runner = new Runner(view, this.target);
@@ -36,7 +38,7 @@ export default class EnemiesFactory {
     this.entities.push(runner);
     return runner;
   }
-  createTourelle(x: number, y: number) {
+  public createTourelle(x: number, y: number) {
     const view = new TourelleView(this.assets);
     this.worldContainer.addChild(view);
     const tourelle = new Tourelle(view, this.target, this.bulletFactory);
@@ -44,5 +46,18 @@ export default class EnemiesFactory {
     tourelle.y = y;
     this.entities.push(tourelle);
     return tourelle;
+  }
+
+  public createBoss(x: number, y: number) {
+    const view = new BossView(this.assets);
+    this.worldContainer.addChild(view);
+
+    const boss = new Boss(view);
+    boss.x = x - 35;
+    boss.y = y + 95;
+
+    this.entities.push(boss);
+
+    return boss;
   }
 }
