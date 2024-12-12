@@ -1,4 +1,4 @@
-import BulletFactory from "./Entities/Bullets/BulletFactory";
+import BulletFactory from './Entities/Bullets/BulletFactory';
 
 export default class Weapon {
   private currentGunStrategy;
@@ -45,6 +45,7 @@ export default class Weapon {
   }
 
   public defaultGunStrategy(bulletContext: any) {
+    this.limit = 6;
     this.bulletFactory.createBullet(bulletContext);
   }
 
