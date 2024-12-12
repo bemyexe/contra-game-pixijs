@@ -15,6 +15,7 @@ import SceneFactory from './SceneFactory';
 import AssetsFactory from './AssetsFactory';
 import Bullet from './Entities/Bullets/Bullet';
 import PowerupFactory from './Entities/Powerups/PowerupFactory';
+import GravitableBullet from './Entities/Bullets/GravitableBullet';
 
 export default class Game {
   private app;
@@ -156,7 +157,7 @@ export default class Game {
     }
   }
 
-  public checkPlatformCollision(character: Hero | Runner, platform: Platform) {
+  public checkPlatformCollision(character: any, platform: Platform) {
     const prevPoint = character.prevPoint;
     const collisionResult = Physics.getOrientCollisionResult(
       character.collisionBox,
@@ -169,7 +170,11 @@ export default class Game {
       character.stay(platform.y);
     }
 
-    if (collisionResult.horizontal === true && platform.type == 'box') {
+    if (
+      collisionResult.horizontal === true &&
+      platform.type == 'box' &&
+      !character.isForbiddenHorizontalCollision
+    ) {
       if (platform.isStep) {
         character.stay(platform.y);
       } else {

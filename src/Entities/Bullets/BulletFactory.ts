@@ -1,6 +1,7 @@
-import { Container, Graphics } from 'pixi.js';
+import {Container, Graphics} from 'pixi.js';
 import Bullet from './Bullet';
 import BulletView from './BulletView';
+import GravitableBullet from './GravitableBullet';
 
 export default class BulletFactory {
   private worldContainer;
@@ -10,7 +11,7 @@ export default class BulletFactory {
     this.entities = entities;
   }
 
-  public createBullet(bulletContext: { [key: string]: any }) {
+  public createBullet(bulletContext: {[key: string]: any}) {
     const skin = new Graphics();
     skin.rect(0, 0, 5, 5);
     skin.fill(0xffffff);
@@ -27,7 +28,7 @@ export default class BulletFactory {
     this.entities.push(bullet);
   }
 
-  public createSpreadGunBullet(bulletContext: { [key: string]: any }) {
+  public createSpreadGunBullet(bulletContext: {[key: string]: any}) {
     const skin = new Graphics();
     skin.circle(0, 0, 6);
     skin.fill(0xff2222);
@@ -43,6 +44,26 @@ export default class BulletFactory {
     bullet.y = bulletContext.y;
     bullet.type = bulletContext.type;
     bullet.speed = 7;
+
+    this.entities.push(bullet);
+  }
+
+  public createBossBullet(bulletContext: {[key: string]: any}) {
+    const skin = new Graphics();
+    skin.circle(0, 0, 6);
+    skin.fill(0xff2222);
+    skin.circle(-3, -3, 3);
+    skin.fill(0xdddddd);
+
+    const view = new BulletView();
+    view.addChild(skin);
+    this.worldContainer.addChild(view);
+
+    const bullet = new GravitableBullet(view);
+    bullet.x = bulletContext.x;
+    bullet.y = bulletContext.y;
+    bullet.type = bulletContext.type;
+    bullet.speed = Math.random() * -6 - 2;
 
     this.entities.push(bullet);
   }

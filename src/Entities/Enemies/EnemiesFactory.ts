@@ -8,6 +8,8 @@ import BulletFactory from '../Bullets/BulletFactory';
 import AssetsFactory from '../../AssetsFactory';
 import BossView from './Boss/BossView';
 import Boss from './Boss/Boss';
+import BossGunView from './Boss/BossGunView';
+import BossGun from './Boss/BossGun';
 
 export default class EnemiesFactory {
   private worldContainer;
@@ -58,6 +60,23 @@ export default class EnemiesFactory {
 
     this.entities.push(boss);
 
+    const gun1 = this.createBossGun();
+    gun1.x = x - 56;
+    gun1.y = y;
+
+    const gun2 = this.createBossGun();
+    gun2.x = x + 34;
+    gun2.y = y;
+
     return boss;
+  }
+
+  public createBossGun() {
+    const gunView = new BossGunView(this.assets);
+    this.worldContainer.addChild(gunView);
+    const bossGun = new BossGun(gunView, this.target, this.bulletFactory);
+    this.entities.push(bossGun);
+
+    return bossGun;
   }
 }
