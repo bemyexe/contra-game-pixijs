@@ -1,4 +1,4 @@
-import { Graphics, Sprite } from 'pixi.js';
+import {Graphics, Sprite} from 'pixi.js';
 import PlatformView from './PlatformView';
 import Platform from './Platform';
 import BridgePlatform from './BridgePlatform';
@@ -88,7 +88,7 @@ export default class PlatformFactory {
 
     const view = new PlatformView(this.platformWidth, this.platformHeight);
     view.addChild(skin);
-    const platform = new BridgePlatform(view);
+    const platform = new BridgePlatform(view, this.assets);
     platform.x = x;
     platform.y = y;
     this.worldContainer.background.addChild(view);

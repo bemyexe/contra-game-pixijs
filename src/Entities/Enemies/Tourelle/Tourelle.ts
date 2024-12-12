@@ -1,13 +1,13 @@
-import BulletFactory from "../../Bullets/BulletFactory";
-import Entity from "../../Entity";
-import Hero from "../../Hero/Hero";
+import BulletFactory from '../../Bullets/BulletFactory';
+import Entity from '../../Entity';
+import Hero from '../../Hero/Hero';
 
 export default class Tourelle extends Entity {
   private target;
   private bulletFactory;
   private timeCounter = 0;
   private health = 5;
-  public type = "enemy";
+  public type = 'enemy';
 
   constructor(view: any, target: Hero, bulletFactory: BulletFactory) {
     super(view);
@@ -36,7 +36,12 @@ export default class Tourelle extends Entity {
     this.health--;
 
     if (this.health < 1) {
-      this.dead();
+      this.timeCounter = 0;
+      const deadAnimation = this._view.showAndGetDeadAnimation();
+
+      deadAnimation.onComplete = () => {
+        this.dead();
+      };
     }
   }
 
@@ -47,7 +52,7 @@ export default class Tourelle extends Entity {
     bulletContext.x = this.x;
     bulletContext.y = this.y;
     bulletContext.angle = (angle / Math.PI) * 180;
-    bulletContext.type = "enemyBullet";
+    bulletContext.type = 'enemyBullet';
 
     this.bulletFactory.createBullet(bulletContext);
 

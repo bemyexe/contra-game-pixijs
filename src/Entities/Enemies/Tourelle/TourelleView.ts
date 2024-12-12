@@ -1,10 +1,10 @@
-import { Container, Graphics, Sprite } from 'pixi.js';
+import {AnimatedSprite, Container, Graphics, Sprite} from 'pixi.js';
 import AssetsFactory from '../../../AssetsFactory';
 
 export default class TourelleView extends Container {
   private gunView;
 
-  private collisionBox = { x: 0, y: 0, width: 0, height: 0 };
+  private collisionBox = {x: 0, y: 0, width: 0, height: 0};
   private assets;
 
   constructor(assets: AssetsFactory) {
@@ -57,5 +57,24 @@ export default class TourelleView extends Container {
 
   get hitBox() {
     return this.getCollisionBox;
+  }
+
+  public showAndGetDeadAnimation() {
+    this.gunView.visible = false;
+    this.collisionBox.width = 0;
+    this.collisionBox.height = 0;
+
+    const explosion = new AnimatedSprite(
+      this.assets.getAnimationTextures('explosion')
+    );
+    explosion.animationSpeed = 0.2;
+    explosion.scale.x = 2;
+    explosion.scale.y = 2;
+    explosion.x = -explosion.width / 2;
+    explosion.y = -explosion.height / 2;
+    explosion.loop = false;
+    explosion.play();
+    this.addChild(explosion);
+    return explosion;
   }
 }

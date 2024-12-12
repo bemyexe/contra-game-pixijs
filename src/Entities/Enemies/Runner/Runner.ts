@@ -1,7 +1,7 @@
-import Entity from "../../Entity";
-import Hero from "../../Hero/Hero";
+import Entity from '../../Entity';
+import Hero from '../../Hero/Hero';
 
-const STATES = {stay: "stay", jump: "jump", flyDown: "flydown"};
+const STATES = {stay: 'stay', jump: 'jump', flyDown: 'flydown'};
 
 export default class Runner extends Entity {
   private GRAVITY_FORCE = 0.2;
@@ -25,7 +25,7 @@ export default class Runner extends Entity {
 
   public jumpBehaviorKoef = 0.4;
 
-  public type = "enemy";
+  public type = 'enemy';
 
   constructor(view: any, target: Hero) {
     super(view);
@@ -97,7 +97,16 @@ export default class Runner extends Entity {
   }
 
   public damage() {
-    this.dead();
+    this.movement.x = 0;
+    this.GRAVITY_FORCE = 0;
+    this.velocityX = 0;
+    this.velocityY = 0;
+
+    const deadAnimation = this._view.showAndGetDeadAnimation();
+
+    deadAnimation.onComplete = () => {
+      this.dead();
+    };
   }
 
   public stay(platformY: number) {

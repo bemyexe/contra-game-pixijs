@@ -1,4 +1,4 @@
-import { AnimatedSprite, Container, Sprite } from 'pixi.js';
+import {AnimatedSprite, Container, Sprite} from 'pixi.js';
 import AssetsFactory from '../../../AssetsFactory';
 
 export default class RunnerView extends Container {
@@ -7,11 +7,11 @@ export default class RunnerView extends Container {
     height: 0,
   };
 
-  private collision = { x: 0, y: 0, width: 0, height: 0 };
+  private collision = {x: 0, y: 0, width: 0, height: 0};
 
   private stm = {
     currentState: 'default',
-    states: {} as { [key: string]: Sprite | Container },
+    states: {} as {[key: string]: Sprite | Container},
   };
 
   private rootNode!: Container;
@@ -34,18 +34,6 @@ export default class RunnerView extends Container {
     for (let key in this.stm.states) {
       this.rootNode.addChild(this.stm.states[key]);
     }
-  }
-
-  private toState(key: string) {
-    if (this.stm.currentState === key) return;
-
-    for (let key in this.stm.states) {
-      this.stm.states[key].visible = false;
-    }
-
-    this.stm.states[key].visible = true;
-
-    this.stm.currentState = key;
   }
 
   get collisionBox() {
@@ -80,6 +68,22 @@ export default class RunnerView extends Container {
       case -1:
         this.rootNode.scale.x = direction;
     }
+  }
+
+  public showAndGetDeadAnimation() {
+    this.rootNode.visible = false;
+    this.collision.width = 0;
+    this.collision.height = 0;
+
+    const explosion = new AnimatedSprite(
+      this.assets.getAnimationTextures('explosion')
+    );
+    explosion.animationSpeed = 0.2;
+    explosion.x = -explosion.width / 2;
+    explosion.loop = false;
+    explosion.play();
+    this.addChild(explosion);
+    return explosion;
   }
 
   private createNodeStructure() {
@@ -126,5 +130,17 @@ export default class RunnerView extends Container {
     const view = new Sprite(this.assets.getTexture('runnerjump0000'));
 
     return view;
+  }
+
+  private toState(key: string) {
+    if (this.stm.currentState === key) return;
+
+    for (let key in this.stm.states) {
+      this.stm.states[key].visible = false;
+    }
+
+    this.stm.states[key].visible = true;
+
+    this.stm.currentState = key;
   }
 }
