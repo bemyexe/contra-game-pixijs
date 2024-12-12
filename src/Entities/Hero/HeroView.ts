@@ -1,5 +1,5 @@
-import {AnimatedSprite, Container, Graphics, Sprite} from "pixi.js";
-import AssetsFactory from "../../AssetsFactory";
+import {AnimatedSprite, Container, Graphics, Sprite} from 'pixi.js';
+import AssetsFactory from '../../AssetsFactory';
 
 export default class HeroView extends Container {
   private bounds = {
@@ -19,7 +19,7 @@ export default class HeroView extends Container {
   };
 
   private stm = {
-    currentState: "default",
+    currentState: 'default',
     states: {} as {[key: string]: Sprite | Container},
   };
 
@@ -93,7 +93,7 @@ export default class HeroView extends Container {
     this.bulletPointsShiftField.y = y;
   }
   public showStay() {
-    this.toState("stay");
+    this.toState('stay');
     this.setBulletPointsShift(50, 29);
 
     this.hitBox.width = 20;
@@ -103,7 +103,7 @@ export default class HeroView extends Container {
   }
 
   public showRun() {
-    this.toState("run");
+    this.toState('run');
     this.setBulletPointsShift(65, 30);
 
     this.hitBox.width = 20;
@@ -113,7 +113,7 @@ export default class HeroView extends Container {
   }
 
   public showRunShoot() {
-    this.toState("runShoot");
+    this.toState('runShoot');
     this.setBulletPointsShift(50, 29);
 
     this.hitBox.width = 20;
@@ -123,7 +123,7 @@ export default class HeroView extends Container {
   }
 
   public showJump() {
-    this.toState("jump");
+    this.toState('jump');
     this.setBulletPointsShift(-2, 40);
 
     this.hitBox.width = 40;
@@ -133,7 +133,7 @@ export default class HeroView extends Container {
   }
 
   public showFall() {
-    this.toState("fall");
+    this.toState('fall');
 
     this.hitBox.width = 20;
     this.hitBox.height = 90;
@@ -142,7 +142,7 @@ export default class HeroView extends Container {
   }
 
   public showLay() {
-    this.toState("lay");
+    this.toState('lay');
     this.setBulletPointsShift(50, 70);
 
     this.hitBox.width = 90;
@@ -152,7 +152,7 @@ export default class HeroView extends Container {
   }
 
   public showStayUp() {
-    this.toState("stayUp");
+    this.toState('stayUp');
     this.setBulletPointsShift(18, -30);
 
     this.hitBox.width = 20;
@@ -162,7 +162,7 @@ export default class HeroView extends Container {
   }
 
   public showRunUp() {
-    this.toState("runUp");
+    this.toState('runUp');
     this.setBulletPointsShift(40, 0);
 
     this.hitBox.width = 20;
@@ -172,7 +172,7 @@ export default class HeroView extends Container {
   }
 
   public showRunDown() {
-    this.toState("runDown");
+    this.toState('runDown');
     this.setBulletPointsShift(47, 50);
 
     this.hitBox.width = 20;
@@ -201,7 +201,7 @@ export default class HeroView extends Container {
     // view.rect(0, 30, 60, 10);
     // view.stroke(0xffff00);
 
-    const view = new Sprite(this.assets.getTexture("stay0000"));
+    const view = new Sprite(this.assets.getTexture('stay0000'));
 
     return view;
   }
@@ -212,7 +212,7 @@ export default class HeroView extends Container {
     // view.rect(8, -40, 5, 40);
     // view.stroke(0xffff00);
 
-    const view = new Sprite(this.assets.getTexture("stayup0000"));
+    const view = new Sprite(this.assets.getTexture('stayup0000'));
     view.x += 2;
     view.y -= 31;
 
@@ -226,7 +226,7 @@ export default class HeroView extends Container {
     // view.stroke(0xffff00);
     // view.skew.x = -0.1;
 
-    const view = new AnimatedSprite(this.assets.getAnimationTextures("run"));
+    const view = new AnimatedSprite(this.assets.getAnimationTextures('run'));
     view.animationSpeed = 0.1;
     view.play();
     view.y -= 3;
@@ -237,7 +237,7 @@ export default class HeroView extends Container {
   private getRunShootImage() {
     const container = new Container();
 
-    const upperPart = new Sprite(this.assets.getTexture("stay0000"));
+    const upperPart = new Sprite(this.assets.getTexture('stay0000'));
     upperPart.x = 8;
     upperPart.y = 2;
 
@@ -248,7 +248,7 @@ export default class HeroView extends Container {
     upperPart.mask = upperPartMask;
 
     const bottomPart = new AnimatedSprite(
-      this.assets.getAnimationTextures("run")
+      this.assets.getAnimationTextures('run')
     );
     bottomPart.animationSpeed = 0.1;
     bottomPart.play();
@@ -278,7 +278,7 @@ export default class HeroView extends Container {
     // view.stroke(0xffff00);
     // view.skew.x = -0.1;
 
-    const view = new AnimatedSprite(this.assets.getAnimationTextures("runup"));
+    const view = new AnimatedSprite(this.assets.getAnimationTextures('runup'));
     view.animationSpeed = 0.1;
     view.play();
     view.y -= 3;
@@ -297,7 +297,7 @@ export default class HeroView extends Container {
     // view.skew.x = -0.1;
 
     const view = new AnimatedSprite(
-      this.assets.getAnimationTextures("rundown")
+      this.assets.getAnimationTextures('rundown')
     );
     view.animationSpeed = 0.1;
     view.play();
@@ -314,7 +314,7 @@ export default class HeroView extends Container {
     // view.x -= 45;
     // view.y += 70;
 
-    const view = new Sprite(this.assets.getTexture("lay0000"));
+    const view = new Sprite(this.assets.getTexture('lay0000'));
     view.x -= 25;
     view.y += 50;
 
@@ -328,7 +328,7 @@ export default class HeroView extends Container {
     // view.x -= 10;
     // view.y += 25;
 
-    const view = new AnimatedSprite(this.assets.getAnimationTextures("jump"));
+    const view = new AnimatedSprite(this.assets.getAnimationTextures('jump'));
     view.animationSpeed = 0.1;
     view.play();
     view.y -= 3;
@@ -344,7 +344,7 @@ export default class HeroView extends Container {
     // view.stroke(0xffff00);
     // view.skew.x = -0.1;
 
-    const view = new Sprite(this.assets.getTexture("run0003"));
+    const view = new Sprite(this.assets.getTexture('run0003'));
 
     return view;
   }

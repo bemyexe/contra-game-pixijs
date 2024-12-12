@@ -1,7 +1,8 @@
-import EnemiesFactory from "./Entities/Enemies/EnemiesFactory";
-import Hero from "./Entities/Hero/Hero";
-import Platform from "./Entities/Platforms/Platform";
-import PlatformFactory from "./Entities/Platforms/PlatformFactory";
+import EnemiesFactory from './Entities/Enemies/EnemiesFactory';
+import Hero from './Entities/Hero/Hero';
+import Platform from './Entities/Platforms/Platform';
+import PlatformFactory from './Entities/Platforms/PlatformFactory';
+import PowerupFactory from './Entities/Powerups/PowerupFactory';
 
 export default class SceneFactory {
   private platforms;
@@ -9,6 +10,7 @@ export default class SceneFactory {
   private enemyFactory;
   private entities;
   private target;
+  private powerupFactory;
 
   private blockSize = 128;
 
@@ -17,13 +19,15 @@ export default class SceneFactory {
     entities: any,
     platformFactory: PlatformFactory,
     enemyFactory: EnemiesFactory,
-    target: Hero
+    target: Hero,
+    powerupFactory: PowerupFactory
   ) {
     this.platforms = platforms;
     this.entities = entities;
     this.platformsFactory = platformFactory;
     this.enemyFactory = enemyFactory;
     this.target = target;
+    this.powerupFactory = powerupFactory;
   }
   createScene() {
     this.createPlatforms();
@@ -32,6 +36,7 @@ export default class SceneFactory {
     this.createBossWall();
     this.createEnemies();
     this.createInteractive();
+    this.createPowerups();
   }
   private createPlatforms() {
     let xIndexes = [24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34];
@@ -113,5 +118,11 @@ export default class SceneFactory {
     this.enemyFactory.createTourelle(this.blockSize * 35 + 64, 550);
     this.enemyFactory.createTourelle(this.blockSize * 45 + 64, 670);
     this.enemyFactory.createTourelle(this.blockSize * 48 + 64, 670);
+  }
+
+  private createPowerups() {
+    this.powerupFactory.createPowerup(this.blockSize * 5, 150);
+    this.powerupFactory.createPowerup(this.blockSize * 15, 150);
+    this.powerupFactory.createPowerup(this.blockSize * 25, 150);
   }
 }
