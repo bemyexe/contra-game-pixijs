@@ -1,4 +1,11 @@
-import {Application} from 'pixi.js';
+import {
+  Application,
+  FillGradient,
+  FillPattern,
+  Text,
+  TextStyle,
+  Texture,
+} from 'pixi.js';
 import Platform from './Entities/Platforms/Platform';
 import PlatformFactory from './Entities/Platforms/PlatformFactory';
 import KeyboardProcessor from './KeyboardProcessor';
@@ -124,6 +131,7 @@ export default class Game {
       );
       enemies.forEach((entity: any) => entity.dead());
       this.isEndGame = true;
+      this.showEndGame();
     }
 
     const isHeroDead =
@@ -137,6 +145,24 @@ export default class Game {
       this.hero.y = 100;
       this.weapon.setWeapon(1);
     }
+  }
+
+  private showEndGame() {
+    const style = new TextStyle({
+      fill: 0xdd0000,
+      fontFamily: 'Impact',
+      fontSize: 50,
+
+      stroke: {color: 0x000000, width: 2},
+      letterSpacing: 30,
+    });
+
+    const text = new Text({text: 'STAGE CLEAR', style});
+
+    text.x = this.app.screen.width / 2 - text.width / 2;
+    text.y = this.app.screen.height / 2 - text.height / 2;
+
+    this.app.stage.addChild(text);
   }
 
   private checkDamage(entity: any) {
