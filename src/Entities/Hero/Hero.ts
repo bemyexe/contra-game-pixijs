@@ -1,7 +1,7 @@
-import HeroWeaponUnit from "./HeroWeaponUnit";
-import Entity from "../Entity";
+import HeroWeaponUnit from './HeroWeaponUnit';
+import Entity from '../Entity';
 
-const STATES = {stay: "stay", jump: "jump", flyDown: "flydown"};
+const STATES = {stay: 'stay', jump: 'jump', flyDown: 'flydown'};
 
 export default class Hero extends Entity {
   private GRAVITY_FORCE = 0.2;
@@ -32,10 +32,8 @@ export default class Hero extends Entity {
   public isFall = false;
 
   private heroWeaponUnit;
-  private health = 5;
 
-  public type = "hero";
-  private healthDisplayElement: HTMLElement;
+  public type = 'hero';
 
   constructor(view: any) {
     super(view);
@@ -46,8 +44,6 @@ export default class Hero extends Entity {
     this._view.showJump();
 
     this.gravitable = true;
-    this.healthDisplayElement = document.getElementById("health")!;
-    this.updateHealthDisplay();
   }
 
   get bulletContext() {
@@ -78,17 +74,7 @@ export default class Hero extends Entity {
   }
 
   public damage() {
-    this.health--;
-    if (this.health < 1) {
-      this.dead();
-    }
-    this.updateHealthDisplay();
-  }
-
-  private updateHealthDisplay() {
-    if (this.healthDisplayElement) {
-      this.healthDisplayElement.textContent = this.health.toString();
-    }
+    this.dead();
   }
 
   public stay(platformY: number) {
