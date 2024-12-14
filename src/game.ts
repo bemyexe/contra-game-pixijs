@@ -1,11 +1,4 @@
-import {
-  Application,
-  FillGradient,
-  FillPattern,
-  Text,
-  TextStyle,
-  Texture,
-} from 'pixi.js';
+import {Application, Text, TextStyle} from 'pixi.js';
 import Platform from './Entities/Platforms/Platform';
 import PlatformFactory from './Entities/Platforms/PlatformFactory';
 import KeyboardProcessor from './KeyboardProcessor';
@@ -21,6 +14,7 @@ import AssetsFactory from './AssetsFactory';
 import Bullet from './Entities/Bullets/Bullet';
 import PowerupFactory from './Entities/Powerups/PowerupFactory';
 import Hero from './Entities/Hero/Hero';
+import StaticBackground from './StaticBackground';
 
 export default class Game {
   private app;
@@ -39,6 +33,7 @@ export default class Game {
     this.app = app;
 
     this.worldContainer = new World();
+    this.app.stage.addChild(new StaticBackground(this.app.screen, assets));
     this.app.stage.addChild(this.worldContainer);
 
     this.bulletFactory = new BulletFactory(
@@ -135,7 +130,7 @@ export default class Game {
     }
 
     const isHeroDead =
-      !this.entities.some((entity: Hero) => entity.type == 'hero') &&
+      !this.entities.some((entity: Hero) => entity.type === 'hero') &&
       this.hero.isDead;
     if (isHeroDead) {
       this.entities.push(this.hero);

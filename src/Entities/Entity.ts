@@ -51,15 +51,15 @@ export default class Entity {
     return this.isDeadState;
   }
 
-  dead() {
+  public dead() {
     this.isDeadState = true;
   }
 
-  resuraction() {
+  public resuraction() {
     this.isDeadState = false;
   }
 
-  removeFromStage() {
+  public removeFromStage() {
     if (this._view.parent !== null) {
       this._view.removeFromParent();
     }

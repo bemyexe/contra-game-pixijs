@@ -30,14 +30,24 @@ export default class SceneFactory {
     this.powerupFactory = powerupFactory;
   }
   createScene() {
+    this.createDecorations();
     this.createPlatforms();
     this.createGround();
     this.createWater();
     this.createBossWall();
+
     this.createEnemies();
-    this.createInteractive();
     this.createPowerups();
+
+    this.createInteractive();
   }
+
+  private createDecorations() {
+    for (let i = 22; i < 52; i++) {
+      this.platformsFactory.createJungle(this.blockSize * i, 0);
+    }
+  }
+
   private createPlatforms() {
     let xIndexes = [24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34];
     this.create(xIndexes, 276, this.platformsFactory.createPlatform);
@@ -73,10 +83,10 @@ export default class SceneFactory {
     this.create(xIndexes, 768, this.platformsFactory.createWater);
   }
   private createBossWall() {
-    let xIndexes = [5]; // 52
+    let xIndexes = [52]; // 52
     this.create(xIndexes, 170, this.platformsFactory.createBossWall);
 
-    this.enemyFactory.createBoss(this.blockSize * 5, 440);
+    this.enemyFactory.createBoss(this.blockSize * 52, 440);
   }
   private createInteractive() {
     let xIndexes = [16, 17, 18, 19];

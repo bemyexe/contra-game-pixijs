@@ -40,14 +40,20 @@ export default class PlatformFactory {
     box.isStep = true;
     return box;
   }
+
   public createWater(x: number, y: number) {
     const skin = new Graphics();
 
     skin.rect(0, -this.platformHeight, this.platformWidth, this.platformHeight);
-    skin.fill(0x0000ff);
+    skin.fill(0x0072ec);
+
+    const waterTop = new Sprite(this.assets.getTexture('water0000'));
+    waterTop.y = -this.platformHeight;
 
     const view = new PlatformView(this.platformWidth, this.platformHeight);
     view.addChild(skin);
+    view.addChild(waterTop);
+
     const platform = new Platform(view);
     platform.x = x;
     platform.y = y;
@@ -93,6 +99,26 @@ export default class PlatformFactory {
     platform.y = y;
     this.worldContainer.background.addChild(view);
     return platform;
+  }
+
+  public createJungle(x: number, y: number) {
+    const jungleTop = new Sprite(this.assets.getTexture('jungletop0000'));
+    for (let i = 1; i <= 5; i++) {
+      const jungleBottom = this.createJungleBottom(jungleTop);
+      jungleBottom.y = jungleTop.height * i - 2 * i;
+    }
+
+    jungleTop.x = x;
+    jungleTop.y = y;
+
+    this.worldContainer.background.addChild(jungleTop);
+  }
+
+  private createJungleBottom(jungleTop: Sprite) {
+    const jungleBottom = new Sprite(this.assets.getTexture('junglebottom0000'));
+    jungleTop.addChild(jungleBottom);
+
+    return jungleBottom;
   }
 
   private getGroundPlatform() {
