@@ -13,6 +13,7 @@ import SceneFactory from './SceneFactory';
 import AssetsFactory from './AssetsFactory';
 import Bullet from './Entities/Bullets/Bullet';
 import PowerupFactory from './Entities/Powerups/PowerupFactory';
+import Hero from './Entities/Hero/Hero';
 
 export default class Game {
   private app;
@@ -123,6 +124,18 @@ export default class Game {
       );
       enemies.forEach((entity: any) => entity.dead());
       this.isEndGame = true;
+    }
+
+    const isHeroDead =
+      !this.entities.some((entity: Hero) => entity.type == 'hero') &&
+      this.hero.isDead;
+    if (isHeroDead) {
+      this.entities.push(this.hero);
+      this.worldContainer.game.addChild(this.hero._view);
+      this.hero.reset();
+      this.hero.x = -this.worldContainer.x + 160;
+      this.hero.y = 100;
+      this.weapon.setWeapon(1);
     }
   }
 

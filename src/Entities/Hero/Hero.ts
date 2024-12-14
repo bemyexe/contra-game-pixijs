@@ -168,4 +168,10 @@ export default class Hero extends Entity {
       }
     }
   }
+
+  public reset() {
+    this.GRAVITY_FORCE = 0.2;
+    this._view.reset();
+    this.resuraction();
+  }
 }

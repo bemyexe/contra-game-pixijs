@@ -86,6 +86,13 @@ export default class HeroView extends Container {
   get bulletPointsShift() {
     return this.bulletPointsShiftField;
   }
+
+  public reset() {
+    this.rootNode.visible = true;
+    this.collision.width = this.bounds.width;
+    this.collision.height = this.bounds.height;
+  }
+
   private setBulletPointsShift(x: number, y: number) {
     this.bulletPointsShiftField.x =
       (x + this.rootNode.pivot.x * this.rootNode.scale.x) *
