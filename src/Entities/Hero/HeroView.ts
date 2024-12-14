@@ -93,6 +93,22 @@ export default class HeroView extends Container {
     this.collision.height = this.bounds.height;
   }
 
+  public showAndGetDeadAnimation() {
+    this.rootNode.visible = false;
+    this.collision.width = 0;
+    this.collision.height = 0;
+
+    const explosion = new AnimatedSprite(
+      this.assets.getAnimationTextures('explosion')
+    );
+    explosion.animationSpeed = 0.2;
+    explosion.x = -explosion.width / 2;
+    explosion.loop = false;
+    explosion.play();
+    this.addChild(explosion);
+    return explosion;
+  }
+
   private setBulletPointsShift(x: number, y: number) {
     this.bulletPointsShiftField.x =
       (x + this.rootNode.pivot.x * this.rootNode.scale.x) *

@@ -74,7 +74,17 @@ export default class Hero extends Entity {
   }
 
   public damage() {
-    this.dead();
+    this.movement.x = 0;
+    this.GRAVITY_FORCE = 0;
+    this.velocityX = 0;
+    this.velocityY = 0;
+
+    const deadAnimation = this._view.showAndGetDeadAnimation();
+
+    deadAnimation.onComplete = () => {
+      this.dead();
+      deadAnimation.removeFromParent();
+    };
   }
 
   public stay(platformY: number) {
