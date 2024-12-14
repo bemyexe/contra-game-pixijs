@@ -137,7 +137,7 @@ export default class Game {
       this.worldContainer.game.addChild(this.hero._view);
       this.hero.reset();
       this.hero.x = -this.worldContainer.x + 160;
-      this.hero.y = 100;
+      this.hero.y = 10;
       this.weapon.setWeapon(1);
     }
   }
@@ -324,6 +324,7 @@ export default class Game {
     if (entity.isDead || this.isScreenOut(entity)) {
       entity.removeFromStage();
       this.entities.splice(index, 1);
+      entity.dead();
     }
   }
 
