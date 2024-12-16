@@ -1,4 +1,4 @@
-import Game from "./game";
+import Game from './game';
 
 export default class KeyboardProcessor {
   private keyMap: {
@@ -33,11 +33,11 @@ export default class KeyboardProcessor {
     this.gameContext = gameContext;
   }
 
-  getButton(keyName: string) {
+  public getButton(keyName: string) {
     return this.keyMap[keyName];
   }
 
-  onKeyDown(key: KeyboardEvent) {
+  public onKeyDown(key: KeyboardEvent) {
     const button = this.keyMap[key.code];
     if (button != undefined) {
       button.isDown = true;
@@ -45,7 +45,7 @@ export default class KeyboardProcessor {
     }
   }
 
-  onKeyUp(key: KeyboardEvent) {
+  public onKeyUp(key: KeyboardEvent) {
     const button = this.keyMap[key.code];
     if (button != undefined) {
       button.isDown = false;
@@ -53,7 +53,7 @@ export default class KeyboardProcessor {
     }
   }
 
-  isButtonPressed(keyName: string) {
+  public isButtonPressed(keyName: string) {
     return this.keyMap[keyName]?.isDown;
   }
 }

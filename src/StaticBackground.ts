@@ -29,7 +29,7 @@ export default class StaticBackground extends Container {
     this.addChild(water);
   }
 
-  createStar() {
+  public createStar() {
     const star = new Graphics();
     star.fill(0xdddddd);
     star.rect(0, 0, 2, 2);
@@ -38,7 +38,12 @@ export default class StaticBackground extends Container {
     return star;
   }
 
-  createMounts(assets: AssetsFactory, x: number, y: number, scale: number) {
+  public createMounts(
+    assets: AssetsFactory,
+    x: number,
+    y: number,
+    scale: number
+  ) {
     const mounts = new Sprite(assets.getTexture('mounts0000'));
     mounts.scale.x = scale;
     mounts.scale.y = scale;

@@ -29,7 +29,7 @@ export default class SceneFactory {
     this.target = target;
     this.powerupFactory = powerupFactory;
   }
-  createScene() {
+  public createScene() {
     this.createDecorations();
     this.createPlatforms();
     this.createGround();

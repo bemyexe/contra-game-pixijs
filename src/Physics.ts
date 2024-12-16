@@ -6,7 +6,7 @@ interface RectProps {
 }
 
 export default class Physics {
-  static getOrientCollisionResult(
+  public static getOrientCollisionResult(
     aaRect: RectProps,
     bbRect: RectProps,
     aaPrevPoint: {x: number; y: number}
@@ -30,7 +30,7 @@ export default class Physics {
     return collisionResult;
   }
 
-  static isCheckAABB(entity: RectProps, area: RectProps) {
+  public static isCheckAABB(entity: RectProps, area: RectProps) {
     return (
       entity.x < area.x + area.width &&
       entity.x + entity.width > area.x &&
