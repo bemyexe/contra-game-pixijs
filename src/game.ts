@@ -17,6 +17,8 @@ import Hero from './Entities/Hero/Hero';
 import StaticBackground from './StaticBackground';
 
 export default class Game {
+  public keyboardProcessor;
+
   private app;
   private hero;
   private platforms: Platform[] = [];
@@ -26,8 +28,6 @@ export default class Game {
   private worldContainer: World;
   private weapon;
   private isEndGame = false;
-
-  public keyboardProcessor;
 
   constructor(app: Application, assets: AssetsFactory) {
     this.app = app;
@@ -109,104 +109,6 @@ export default class Game {
     this.weapon.update(this.hero.bulletContext);
 
     this.checkGameStatus();
-  }
-
-  private checkGameStatus() {
-    if (this.isEndGame) {
-      return;
-    }
-
-    const isBossDead = this.entities.some(
-      (entity: any) => entity.isBoss && !entity.isActive
-    );
-
-    if (isBossDead) {
-      const enemies = this.entities.filter(
-        (entity: any) => entity.type === 'enemy' && !entity.isBoss
-      );
-      enemies.forEach((entity: any) => entity.dead());
-      this.isEndGame = true;
-      this.showEndGame();
-    }
-
-    const isHeroDead =
-      !this.entities.some((entity: Hero) => entity.type === 'hero') &&
-      this.hero.isDead;
-    if (isHeroDead) {
-      this.entities.push(this.hero);
-      this.worldContainer.game.addChild(this.hero._view);
-      this.hero.reset();
-      this.hero.x = -this.worldContainer.x + 160;
-      this.hero.y = 10;
-      this.weapon.setWeapon(1);
-    }
-  }
-
-  private showEndGame() {
-    const style = new TextStyle({
-      fill: 0xdd0000,
-      fontFamily: 'Impact',
-      fontSize: 50,
-
-      stroke: {color: 0x000000, width: 2},
-      letterSpacing: 30,
-    });
-
-    const text = new Text({text: 'STAGE CLEAR', style});
-
-    text.x = this.app.screen.width / 2 - text.width / 2;
-    text.y = this.app.screen.height / 2 - text.height / 2;
-
-    this.app.stage.addChild(text);
-  }
-
-  private checkDamage(entity: any) {
-    const damagers: any = this.entities.filter(
-      (damager: any) =>
-        ((entity.type === 'enemy' || entity.type === 'powerupBox') &&
-          damager.type === 'heroBullet') ||
-        (entity.type === 'hero' &&
-          (damager.type === 'enemyBullet' || damager.type === 'enemy'))
-    );
-
-    for (let damager of damagers) {
-      if (Physics.isCheckAABB(damager.hitBox, entity.hitBox)) {
-        entity.damage();
-        if (damager.type !== 'enemy') {
-          damager.dead();
-        }
-        break;
-      }
-    }
-
-    const powerups = this.entities.filter(
-      (powerup: any) =>
-        powerup.type == 'spreadgunpowerup' && entity.type == 'hero'
-    );
-    for (let powerup of powerups) {
-      if (Physics.isCheckAABB(powerup.hitBox, entity.hitBox)) {
-        powerup.damage();
-        this.weapon.setWeapon(powerup.powerupType);
-        break;
-      }
-    }
-  }
-
-  private checkPlatforms(character: any) {
-    if (character.isDead || !character.gravitable) return;
-
-    for (let platform of this.platforms) {
-      if (
-        (character.isJumpState() && platform.type !== 'box') ||
-        !platform.isActive
-      )
-        continue;
-      this.checkPlatformCollision(character, platform);
-    }
-
-    if (character.type === 'hero' && character.x < -this.worldContainer.x) {
-      character.x = character.prevPoint.x;
-    }
   }
 
   public checkPlatformCollision(character: any, platform: Platform) {
@@ -318,6 +220,104 @@ export default class Game {
       this.keyboardProcessor.isButtonPressed('ArrowDown');
     buttonContext.shoot = this.keyboardProcessor.isButtonPressed('KeyA');
     return buttonContext;
+  }
+
+  private checkGameStatus() {
+    if (this.isEndGame) {
+      return;
+    }
+
+    const isBossDead = this.entities.some(
+      (entity: any) => entity.isBoss && !entity.isActive
+    );
+
+    if (isBossDead) {
+      const enemies = this.entities.filter(
+        (entity: any) => entity.type === 'enemy' && !entity.isBoss
+      );
+      enemies.forEach((entity: any) => entity.dead());
+      this.isEndGame = true;
+      this.showEndGame();
+    }
+
+    const isHeroDead =
+      !this.entities.some((entity: Hero) => entity.type === 'hero') &&
+      this.hero.isDead;
+    if (isHeroDead) {
+      this.entities.push(this.hero);
+      this.worldContainer.game.addChild(this.hero._view);
+      this.hero.reset();
+      this.hero.x = -this.worldContainer.x + 160;
+      this.hero.y = 10;
+      this.weapon.setWeapon(1);
+    }
+  }
+
+  private showEndGame() {
+    const style = new TextStyle({
+      fill: 0xdd0000,
+      fontFamily: 'Impact',
+      fontSize: 50,
+
+      stroke: {color: 0x000000, width: 2},
+      letterSpacing: 30,
+    });
+
+    const text = new Text({text: 'STAGE CLEAR', style});
+
+    text.x = this.app.screen.width / 2 - text.width / 2;
+    text.y = this.app.screen.height / 2 - text.height / 2;
+
+    this.app.stage.addChild(text);
+  }
+
+  private checkDamage(entity: any) {
+    const damagers: any = this.entities.filter(
+      (damager: any) =>
+        ((entity.type === 'enemy' || entity.type === 'powerupBox') &&
+          damager.type === 'heroBullet') ||
+        (entity.type === 'hero' &&
+          (damager.type === 'enemyBullet' || damager.type === 'enemy'))
+    );
+
+    for (let damager of damagers) {
+      if (Physics.isCheckAABB(damager.hitBox, entity.hitBox)) {
+        entity.damage();
+        if (damager.type !== 'enemy') {
+          damager.dead();
+        }
+        break;
+      }
+    }
+
+    const powerups = this.entities.filter(
+      (powerup: any) =>
+        powerup.type == 'spreadgunpowerup' && entity.type == 'hero'
+    );
+    for (let powerup of powerups) {
+      if (Physics.isCheckAABB(powerup.hitBox, entity.hitBox)) {
+        powerup.damage();
+        this.weapon.setWeapon(powerup.powerupType);
+        break;
+      }
+    }
+  }
+
+  private checkPlatforms(character: any) {
+    if (character.isDead || !character.gravitable) return;
+
+    for (let platform of this.platforms) {
+      if (
+        (character.isJumpState() && platform.type !== 'box') ||
+        !platform.isActive
+      )
+        continue;
+      this.checkPlatformCollision(character, platform);
+    }
+
+    if (character.type === 'hero' && character.x < -this.worldContainer.x) {
+      character.x = character.prevPoint.x;
+    }
   }
 
   private checkEntityStatus(entity: any, index: number) {
