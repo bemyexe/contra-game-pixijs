@@ -1,8 +1,9 @@
 export default class Entity {
   _view;
 
-  private isDeadState: boolean = false;
   public isActiveField: boolean = false;
+
+  private isDeadState: boolean = false;
   private gravitableField: boolean = false;
 
   constructor(view: any) {

@@ -1,5 +1,5 @@
-import {Container, Rectangle} from "pixi.js";
-import Hero from "./Entities/Hero/Hero";
+import {Container, Rectangle} from 'pixi.js';
+import Hero from './Entities/Hero/Hero';
 
 export interface CameraSettings {
   target: Hero;
@@ -25,7 +25,7 @@ export default class Camera {
     this.centerScreenPointX = cameraSettings.screenSize.width / 2;
     this.rightBorderWorldPointX = this.world.width - this.centerScreenPointX;
   }
-  update() {
+  public update() {
     if (
       this.target.x > this.centerScreenPointX &&
       this.target.x < this.rightBorderWorldPointX &&
